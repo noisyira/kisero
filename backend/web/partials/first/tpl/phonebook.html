@@ -1,0 +1,83 @@
+<div class="aside" tabindex="-1" role="dialog">
+    <div class="aside-dialog">
+        <div class="aside-content" ng-controller="phonebookCtrl">
+            <div class="aside-header">
+                <button type="button" class="close" ng-click="$hide()">&times;</button>
+                <h4 class="aside-title">Телефонный справочник</h4>
+            </div>
+            <div class="aside-body" style="min-height: 85vh;">
+
+               <span class="green"><i class="fa fa-circle" aria-hidden="true"></i>&nbsp;—&nbsp;Свободен</span><br>
+               <span class="red"><i class="fa fa-circle" aria-hidden="true"></i>&nbsp;—&nbsp;Не доступен</span><br>
+               <span style="color: #c3920c"><i class="fa fa-circle" aria-hidden="true"></i>&nbsp;—&nbsp;Разговариевает</span><br><br>
+
+                <form>
+                    <div class="form-group">
+                        <div class="input-group" style="max-width: 250px;" >
+                            <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="Поиск ..."
+                                   ng-model="searchPhone">
+                        </div>
+                    </div>
+                </form>
+
+                <div
+                    cg-busy="{promise:myPromise,message:'Loading',backdrop:false,templateUrl:'/partials/spinner.html',minDuration:700}">
+                <table ng-table="phoneBook" class="table borderless" show-filter="true">
+                    <thead style="display: none;"></thead>
+                    <tbody ng-repeat="(key, value) in phoneLists">
+                        <tr>
+                            <td colspan="2"><strong>{{key}}</strong></td>
+                        </tr>
+                        <tr ng-repeat="item in value | filter:searchPhone">
+                            <td>
+                                <span ng-class="item.status == 'online'? 'green':'red'"
+                                    ng-show="!item.channels.length"
+                                    ng-switch="item.status">
+
+                                    <span ng-switch-when="online"><i class="fa fa-circle" aria-hidden="true"></i></span>
+                                    <span ng-switch-when="offline"><i class="fa fa-circle" aria-hidden="true"></i></span>
+                                </span>
+                            </td>
+                            <td>
+                                <strong>{{item.sip_private_identity}}</strong> — Вн. номер <br>
+                                {{item.user.fam}} {{item.user.im}} {{item.user.ot}} <br>
+                                ( <small>{{item.user.subdivision}}</small> )
+
+                            </td>
+                        </tr>
+                    </tbody>
+
+                    <!--<tr ng-repeat="row in data | filter:searchPhone">-->
+                        <!--<td>-->
+                            <!--<b>{{row.user.company.name || 'Организация не указана'}} — {{row.sip_private_identity}}</b>-->
+
+                            <!--<span ng-class="row.status == 'online'? 'green':'red'"-->
+                                  <!--ng-show="!row.channels.length"-->
+                                  <!--ng-switch="row.status">-->
+
+                                <!--<span ng-switch-when="online"><i class="fa fa-circle" aria-hidden="true"></i></span>-->
+                                <!--<span ng-switch-when="offline"><i class="fa fa-circle" aria-hidden="true"></i></span>-->
+                            <!--</span>-->
+                            <!--<br>-->
+                            <!--<span ng-show="row.channels.length" style="color: #c3920c">-->
+                               <!--<span><i class="fa fa-circle" aria-hidden="true"></i></span>-->
+                            <!--</span>-->
+
+                            <!--<span>— {{row.data.sip_private_identity}}-->
+                               <!--{{row.user.fam}}&nbsp;{{row.user.im}}&nbsp;{{row.user.ot}}<br>-->
+                                 <!--<em>( {{ row.user.subdivision  || '-'}} )</em>-->
+                            <!--</span>-->
+                        <!--</td>-->
+                    <!--</tr>-->
+                </table>
+                </div>
+            </div>
+            <div class="aside-footer">
+                <button type="button" class="btn btn-default" ng-click="$hide()">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>

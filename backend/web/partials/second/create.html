@@ -1,0 +1,445 @@
+<style>
+    .myTabs>ul>li {width: 25%; text-align: center;}
+    .myTabs>ul>li a {cursor: pointer}
+
+    .animate-show.ng-hide-add.ng-hide-add-active,
+    .animate-show.ng-hide-remove.ng-hide-remove-active {
+        -webkit-transition: .5s linear all;
+        transition: .5s linear all;
+        overflow: hidden;
+    }
+
+    .animate-show.ng-hide {
+        line-height: 0;
+        opacity: 0;
+        padding: 0 10px;
+    }
+</style>
+<ol class="breadcrumb">
+    <li><a href="#/">Главная</a></li>
+    <li class="active">Добавить обращение</li>
+</ol>
+
+<!-- Поиск застрахованных по ЕРЗ -->
+<div ng-controller="createTaskDataCtrl">
+
+    <div  ng-controller="findERZCtrl" ng-init="clearERZ()">
+        <label class="task-erz" for="erz">Поиск по реестру застрахованных:</label>
+        <input type="checkbox" id="erz" name="erz" ng-model="findERZ" style="display: none;" />
+
+        <div class="form-group check-element animate-show" ng-show="findERZ">
+
+            <fieldset class="scheduler-border">
+                <legend class="scheduler-border">Поиск застрахованного</legend>
+                <form name="saveFind_ERZ">
+
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <label for="erz_f_name">Фамилия</label>
+                            <input class="form-control"
+                                   id="erz_f_name"
+                                   placeholder="Фамилия"
+                                   ng-model="erz.sName"
+                                   size="30" type="text" />
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="erz_name">Имя</label>
+                            <input class="form-control"
+                                   id="erz_name"
+                                   placeholder="Имя"
+                                   ng-model="erz.Name"
+                                   size="30" type="text" />
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="erz_l_name">Отчество</label>
+                            <input class="form-control"
+                                   id="erz_l_name"
+                                   placeholder="Отчество"
+                                   ng-model="erz.pName"
+                                   size="30" type="text" />
+                        </div>
+                        <div class="col-sm-3">
+                            <!--<label for="erz_date">Дата рождения</label>-->
+                            <div class="form-group" ng-class="{'has-error': datepickerForm.date.$invalid}">
+                                <label class="control-label" for="erz_date">Дата рождения</label>
+                                <input type="text"
+                                       id="erz_date"
+                                       class="form-control"
+                                       ng-model="erz.dateMan"
+                                       data-date-format="ddMMyyyy"
+                                       ui-mask='99-99-9999'
+                                       placeholder="ДД-ММ-ГГГГ"
+                                       name="date"
+                                       bs-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12 text-right">
+                            <!--<input class="btn btn-default" style="margin: 10px 0;"  type="button" ng-click="findERZ=!findERZ" value="Скрыть" >-->
+                            <!--<input class="btn btn-default" style="margin: 10px 0;"  type="button" ng-click="clearERZ()" value="Очистить" >-->
+                            <a class="btn btn-default" ng-click="findERZ=!findERZ"><i class="fa fa-minus-square-o"></i>&nbsp;Скрыть</a>
+                            <a class="btn btn-default" ng-click="clearERZ()"><i class="fa fa-pencil-square-o"></i>&nbsp;Очистить</a>
+                            <a class="btn btn-default" ng-click="submitForm()"><i class='fa fa-search'></i>&nbsp;Поиск</a>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <hr style="margin-bottom: 0;">
+                        <span  ng-show="loading" us-spinner="{right:0, top:10, radius:7, lines: 13, length: 4, width:2, }"></span>
+                        <p ng-show="!erzData">
+                            Для поиска застрахованного лица введите его данные в форму поиска.<br>
+                            Все поля заполнять необязательно.
+                        </p>
+
+                        <!-- Список застрахованных -->
+                        <table ng-show="erzData" class="table table-hover table-condensed table-bordered">
+                            <thead>
+                            <tr>
+                                <td>Фамилия</td>
+                                <td>Имя</td>
+                                <td>Отчество</td>
+                                <td>Дата рождения</td>
+                                <td>Страховая</td>
+                                <td>Прикрепление к МО</td>
+                                <td>Действие</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="row in erzData">
+                                <td>{{row.sName}}</td>
+                                <td>{{row.Name}}</td>
+                                <td>{{row.pName}}</td>
+                                <td> {{formatDate(row.dateMan) | date:'dd-MM-yyyy'}}</td>
+                                <td ng-switch="row.reestr.orgId">
+                                    <span ng-switch-when="1">ООО "СК "ИНГОССТРАХ-М" </span>
+                                    <span ng-switch-when="4">ООО ВТБ МС</span>
+                                    <span ng-switch-default></span>
+                                </td>
+                                <td>
+                                    <span style="font-size: 12px;">{{row.stik.mo.NAMMO}}</span>
+                                    <br>
+                                    <span style="font-size: 10px;">{{row.stik.mo.ADRESMO}}</span>
+                                </td>
+                                <td>
+                                    <a class="exit" style="font-size: 14px; cursor: pointer;" ng-click="setERZ(row)">Применить</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    <!-- Открытие РКК  -->
+    <div>
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border">Регистрационная карта</legend>
+
+            <!-- Создание новой РКК -->
+            <form name="saveNewTaskData" ng-submit="submit()">
+                <!--Общие данные-->
+                <div class="row">
+                    <!-- Данные об обращении -->
+                    <div class="col-md-6">
+                        <!-- Форма обращения -->
+                        <div class="form-group col-md-12" style="padding: 0; margin: 10px 0;">
+                            <label>Форма обращения</label><br>
+                            <div class="btn-group" ng-model="task.form" bs-radio-group>
+                                <label class="btn btn-default">
+                                    <input type="radio" class="btn btn-default" value="0"> Устная</label>
+                                <label class="btn btn-default">
+                                    <input type="radio" class="btn btn-default" value="1"> Письменная</label>
+                            </div>
+                        </div>
+
+                        <!-- Вид обращения -->
+                        <div class="form-group col-md-12" style="padding: 0; margin: 10px 0;">
+                            <label for="task_mode_statement">Вид обращения</label>
+                            <ui-select tagging tagging-label="('new')"
+                                       id="task_mode_statement"
+                                       ng-model="task.statement"
+                                       theme="bootstrap"
+                                       title="Операторы" >
+                                <ui-select-match placeholder="Вид обращения...">
+                                    {{$select.selected.name}}
+                                </ui-select-match>
+                                <ui-select-choices group-by="gp" repeat="mode in listMode | filter: $select.search"
+                                                   refresh="refreshModeStmt()"
+                                                   refresh-delay="0">
+                                    <div ng-bind-html="mode.name | highlight: $select.search"></div>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+
+                        <!-- Тип обращения -->
+                        <div class="form-group col-md-12" style="padding: 0; margin: 10px 0;">
+                            <label for="task_tip_statement">Тип обращения</label>
+                            <select class="form-control"
+                                    id="task_tip_statement"
+                                    ng-change="refreshStmt(task.tip_statement); clear();"
+                                    ng-model="task.tip_statement">
+                                <option value="1" selected="selected">Жалоба</option>
+                                <option value="2">Консультация</option>
+                                <option value="3">Заявление</option>
+                                <option value="4">Предложение</option>
+                            </select>
+                        </div>
+
+                        <!-- Тип обращения == Консультация -->
+                        <div class="form-group col-md-12" style="padding: 0; margin: 10px 0;">
+                            <label for="task_theme_statement_desc">Тема обращения:</label>
+                            <ui-select tagging tagging-label="('new')"
+                                       id="task_theme_statement_desc"
+                                       ng-model="task.theme_statement"
+                                       ng-disabled="!task.tip_statement"
+                                       ng-change="getStmt(task.theme_statement)"
+                                       theme="bootstrap"
+                                       title="Тема обращения">
+                                <ui-select-match placeholder="Тема обращения...">{{$select.selected.theme_statement}}</ui-select-match>
+                                <ui-select-choices group-by="gp" repeat="item in lists | filter: $select.search"
+                                                   refresh="refreshStmt(task.tip_statement)"
+                                                   refresh-delay="0">
+
+                                    <div ng-bind-html="item.theme_statement | highlight: $select.search"></div>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+
+                        <!-- Тип обращения == Предложение -->
+                        <div class="form-group col-sm-12" style="padding: 0; margin: 10px 0;">
+                            <label for="task_theme_statement_desc_">Комментарий:</label>
+                            <textarea id="task_theme_statement_desc_"
+                                      class="form-control"
+                                      style="width: 100%; max-width: 100%;"
+                                      rows="2"
+                                      placeholder="Комментарий..."
+                                      ng-model="task.theme_statement_description">
+                            </textarea>
+                        </div>
+
+                        <div class="form-group col-sm-12" style="padding: 0; margin: 10px 0;">
+                            <label for="user_o">Выберите исполнителя</label>
+                            <ui-select tagging tagging-label="('new')"
+                                       id="user_o"
+                                       ng-model="task.transfer"
+                                       theme="bootstrap"
+                                       title="Операторы" >
+                                <ui-select-match placeholder="Выберите оператора...">
+                                    {{$select.selected.user.fam}}&nbsp;{{$select.selected.user.im}}&nbsp;{{$select.selected.user.ot}}
+                                </ui-select-match>
+                                <ui-select-choices group-by="gp" repeat="item in listUsers | filter: $select.search"
+                                                   refresh="refreshUsers(task)"
+                                                   refresh-delay="0">
+                                    <div ng-bind-html="userHtml(item) | highlight: $select.search"></div>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+
+                    <!-- Данные об обратившемся -->
+                    <div class="col-md-6">
+                        <!-- Фамилия -->
+                        <div class="form-group col-sm-12" style="padding: 0; margin: 10px 0;">
+                            <label for="task_f_name" class="right inline">Фамилия</label>
+                            <input type="hidden" ng-model="task.defer.enp" />
+                            <input class="form-control"
+                                   id="task_f_name"
+                                   ng-model="task.defer.fam"
+                                   placeholder="Фамилия"
+                                   size="30"
+                                   type="text" />
+                        </div>
+
+                        <!-- Имя -->
+                        <div class="form-group col-sm-12" style="padding: 0; margin: 10px 0;">
+                            <label for="task_name" class="right inline">Имя</label>
+                            <input class="form-control"
+                                   id="task_name"
+                                   ng-model="task.defer.im"
+                                   placeholder="Имя"
+                                   size="30"
+                                   type="text" />
+                        </div>
+
+                        <!-- Отчество -->
+                        <div class="form-group col-sm-12" style="padding: 0; margin: 10px 0;">
+                            <label for="task_l_name" class="right inline">Отчество</label>
+                            <input class="form-control"
+                                   id="task_l_name"
+                                   ng-model="task.defer.ot"
+                                   placeholder="Отчество"
+                                   size="30"
+                                   type="text" />
+                        </div>
+
+                        <!-- Дата рождения -->
+                        <div class="form-group col-sm-12" style="padding: 0; margin: 10px 0;">
+                            <label for="task_bith_date" class="right inline">Дата рождения</label>
+                            <input type="text"
+                                   id="task_bith_date"
+                                   class="form-control"
+                                   ng-model="task.defer.dt"
+                                   data-date-format="dd-MM-yyyy"
+                                   placeholder="ДД-ММ-ГГГГ"
+                                   name="date"
+                                   bs-datepicker />
+                        </div>
+
+                        <!--Контактный телефон-->
+                        <div class="form-group col-sm-12" style="padding: 0; margin: 10px 0;">
+                            <label for="defer_phone" class="right inline">Контактный телефон</label>
+                            <input class="form-control"
+                                   id="defer_phone"
+                                   placeholder="Контактный телефон"
+                                   ng-model="task.defer.phone"
+                                   size="30"
+                                   type="text"
+                                   numbers-only
+                            />
+                        </div>
+
+                        <!--E-mail адрес-->
+                        <div class="form-group col-sm-12" style="padding: 0; margin: 10px 0;">
+                            <label for="defer_email" class="right inline">Электронная почта</label>
+                            <input class="form-control"
+                                   id="defer_email"
+                                   placeholder="E-mail адрес"
+                                   ng-model="task.defer.email"
+                                   size="30"
+                                   type="text" />
+                        </div>
+
+                        <!-- Отсроченный ответ -->
+                        <div class="form-group col-sm-12" style="padding: 0; margin: 10px 0;">
+                            <label for="task.defer.agent" class="right inline">Добавить представителя</label>
+                            &nbsp;
+                            <input
+                                    id="task.defer.agent"
+                                    ng-model="task.defer.agent"
+                                    type="checkbox"
+                            />
+                        </div>
+
+
+                        <!--Доп.: контактное лицо-->
+                        <div class="form-group col-sm-12" ng-show="task.defer.agent" style="padding: 0; margin: 10px 0;">
+                            <label for="add_fio" class="right inline">ФИО представителя</label>
+                            <input class="form-control"
+                                   id="add_fio"
+                                   ng-model="task.defer.add_fio"
+                                   placeholder="ФИО представителя"
+                                   size="30"
+                                   type="text" />
+                        </div>
+
+                        <!--Доп.: телефон-->
+                        <div class="form-group col-sm-12" ng-show="task.defer.agent" style="padding: 0; margin: 10px 0;">
+                            <label for="add_phone" class="right inline">Телефон представителя</label>
+                            <input class="form-control"
+                                   id="add_phone"
+                                   ng-model="task.defer.add_phone"
+                                   placeholder="Телефон представителя"
+                                   size="30"
+                                   type="text" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" ng-controller="UploadCtrl" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
+                    <div class="col-md-12" ng-show="task.form == 1">
+                        <div class="callout callout-info col-md-12" >
+                            <p>
+                                <h4>Прикрепите файлы к обращению</h4>
+                                Для прикрепления обязательно укажите номер регистрации документа.
+                            </p>
+                        </div>
+                        <hr style="margin-bottom: 0;">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group col-sm-12"
+                                     ng-class="{ 'has-error' : task.attach.num.$invalid && !task.attach.num.$pristine }"
+                                     style="padding: 0; margin: 10px 0;">
+                                    <label for="attch_num" class="right inline">Номер документа</label>
+                                    <input class="form-control"
+                                           id="attch_num"
+                                           placeholder="Номер"
+                                           ng-model="task.attach.num"
+                                           size="30"
+                                           type="text"
+                                    />
+                                    <p ng-show="task.attach.num.$invalid && !task.attach.num.$pristine" class="help-block">You name is required.</p>
+                                </div>
+
+                            </div>
+                            <div class="col-md-5">
+                                <!-- Дата регистрации файла -->
+                                <div class="form-group col-sm-12" style="padding: 0; margin: 10px 0;">
+                                    <label for="attch_date" class="right inline">Дата регистрации</label>
+                                    <input type="text"
+                                           id="attch_date"
+                                           class="form-control"
+                                           ng-model="task.attach.date"
+                                           data-date-format="dd-MM-yyyy"
+                                           data-autoclose="1"
+                                           placeholder="ДД-ММ-ГГГГ"
+                                           name="date"
+                                           bs-datepicker />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <!-- Example: nv-file-select="" uploader="{Object}" options="{Object}" filters="{String}" -->
+                                <input type="file" nv-file-select="" uploader="uploader" multiple  /><br/>
+                            </div>
+
+                            <div class="col-md-9" style="margin-bottom: 40px">
+                                <p>Количетсво файлов: {{ uploader.queue.length }}</p>
+
+                                <table class="table" ng-show="uploader.queue.length > 0">
+                                    <thead>
+                                        <tr>
+                                            <th width="50%">Название</th>
+                                            <th ng-show="uploader.isHTML5">Размер</th>
+                                            <th>Действие</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="item in uploader.queue">
+                                            <td><strong>{{ item.file.name }}</strong></td>
+                                            <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                                            <td nowrap>
+                                                <button type="button" class="btn btn-warning btn-xs" ng-click="item.remove()">
+                                                    <span class="glyphicon glyphicon-ban-circle"></span> Убрать
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <button type="submit"
+                                class="btn btn-tfoms-green btn-s"
+                                ng-click="saveStmt(task)"
+                                ng-disabled="(!task.attach.num && task.form == 1)"
+                        >
+                            <span class="glyphicon glyphicon-upload"></span> Сохранить
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+        </fieldset>
+    </div>
+</div>

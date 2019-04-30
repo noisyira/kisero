@@ -1,0 +1,153 @@
+<style>
+    fieldset.scheduler-border {
+        border: 1px groove #ddd !important;
+        padding: 0 1.4em 1.4em 1.4em !important;
+        margin: 0 0 1.5em 0 !important;
+        -webkit-box-shadow:  0px 0px 0px 0px #000;
+        box-shadow:  0px 0px 0px 0px #000;
+    }
+
+    legend.scheduler-border {
+        font-size: 1.2em !important;
+        font-weight: bold !important;
+        text-align: left !important;
+        width:auto;
+        padding:0 10px;
+        border-bottom:none;
+    }
+
+    label.task-erz{
+        font-size: 20px;
+        color: cornflowerblue;
+        border-bottom: 1px dashed;
+        cursor: pointer;
+    }
+
+    .em-text{
+        font-style: italic;
+        border-bottom: 1px dashed;
+    }
+</style>
+
+<div ng-controller="editTaskCtrl">
+    <fieldset class="scheduler-border">
+        <legend class="scheduler-border">Регистрационная карта  <span class="label label-tfoms-orange">{{task.status}}</span></legend>
+        <form name="saveNewTaskData" ng-submit="submit()" >
+            <div class="col-md-6">
+            <legend>Общие данные</legend>
+                <table class="table table-condensed table-bordered table-striped">
+                    <tbody>
+                        <tr>
+                            <td><h5>№ обращения</h5></td>
+                            <td><h5>{{task.data.id}}</h5></td>
+                        </tr>
+                        <tr>
+                            <td><h5>Вид обращения</h5></td>
+                            <td><h5>{{task.send.name}}</h5></td>
+                        </tr>
+                        <tr>
+                            <td><h5>Этап обращения</h5></td>
+                            <td><h5>{{task.data.stage_statement}}</h5></td>
+                        </tr>
+                        <tr>
+                            <td><h5>Тип обращения</h5></td>
+                            <td><h5>{{task.group.name}}</h5></td>
+                        </tr>
+                        <tr ng-show="task.data.theme_statement">
+                            <td><h5>Тема обращения</h5></td>
+                            <td><h5>{{task.theme.theme_statement}}</h5></td>
+                        </tr>
+                        <tr ng-show="task.data.theme_statement_description">
+                            <td><h5>Описание предложения</h5></td>
+                            <td><h5>{{task.data.theme_statement_description}}</h5></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-md-6">
+                <legend>Персональные данные</legend>
+
+                <table class="table table-condensed table-bordered table-striped">
+                    <tbody>
+                    <tr>
+                        <td><h5>Фамилия</h5></td>
+                        <td>
+                            <h5>
+                                <span ng-class="{'em-text' : (!task.data.f_name)}">
+                                    {{task.data.f_name || "не указанно"}}
+                                </span>
+                            </h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><h5>Имя</h5></td>
+                        <td>
+                            <h5>
+                                <span ng-class="{'em-text' : (!task.data.name)}">
+                                    {{task.data.name || "не указанно"}}
+                                </span>
+                            </h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><h5>Отчество</h5></td>
+                        <td>
+                            <h5>
+                               <span ng-class="{'em-text' : (!task.data.name)}">
+                                    {{task.data.l_name || "не указанно"}}
+                                </span>
+                            </h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><h5>Дата рождения</h5></td>
+                        <td>
+                            <h5>
+                                <span ng-class="{'em-text' : (!task.data.date)}">
+                                    {{task.data.date || "не указанно"}}
+                                </span>
+                            </h5>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-12">
+            <legend style="padding-top: 20px;">
+                Принятые меры
+            </legend>
+                <div class="col-md-6" style="padding: 0">
+                    <div class="form-group">
+                        <label for="task_result">Принятые меры:</label>
+                        <select id="task_result"
+                            class="form-control"
+                            ng-model="task.state_result"
+                            ng-options="state.id as state.name for state in state_result"
+                            required>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-sm-12" style="padding: 0">
+                    <div class="form-group">
+                        <label for="taken_measures">Описание:</label>
+                        <textarea id="taken_measures"
+                                  style="width: 100%;"
+                                  rows="4"
+                                  placeholder="Краткое описание принятых мер..."
+                                  ng-model="task.taken_measures">
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12 text-right">
+                    <!-- <button ng-click="save()" >Save</button> -->
+                    <input class="btn btn-tfoms-blue" style="margin: 10px 0;" type="submit" ng-click="update(task)" value="Сохранить" >
+                </div>
+            </div>
+        </form>
+    </fieldset>
+</div>

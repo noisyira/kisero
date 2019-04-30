@@ -1,0 +1,176 @@
+<style>
+    .ui-select-search {width: 100%; !important;}
+    .btn-link {text-decoration: none; color: #428bca; border-bottom: dashed 1px #428bca; cursor: pointer;}
+</style>
+
+<ol class="breadcrumb">
+    <li><a href="#/">Главная</a></li>
+    <li class="active">Создание обращения</li>
+</ol>
+
+
+<div ng-controller="createStmt as create">
+    <!-- Открытие РКК  -->
+    <div ng-init="create.getSip()">
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border">Регистрационная карта</legend>
+
+            <!--Загрузка данных / ошибка соединения с БД-->
+            <div class="alert alert-default"
+                 ng-show="loading"
+                 style="position: relative; text-align: center; background-color: lightgrey; font-size: 18px; margin-bottom: 0px"
+            >
+                <span us-spinner="{right:0, top:10, radius:7, lines: 13, length: 4, width:2, }"></br>Загрузка</span></br>
+                <div class="" ng-show="sipError" style="padding-left: 20px;">
+                    <i class="fa fa-exclamation-triangle"></i>  {{sipError}}
+                </div>
+            </div>
+
+            <!-- Создание новой РКК -->
+            <form name="saveNewTaskData" ng-submit="submit()" ng-show="!loading">
+            <!--Общие данные-->
+            <div class="row">
+                <input class="form-control" id="task_id" ng-model="task.channel_id" size="30" type="hidden"/>
+
+                <div class="form-group col-md-12" style="padding: 0; margin: 10px 0;">
+                    <div class="col-sm-4">
+                        <label for="task_tip_statement">Тип обращения</label>
+                        <select class="form-control"
+                                id="task_tip_statement"
+                                style="color: #777;"
+                                ng-change="create.refreshStmt(create.task.tip_statement); create.clear();"
+                                ng-model="create.task.tip_statement">
+                            <option value="" disabled selected style="color: gray; text-align: center;">Тип обращения</option>
+                            <option value="1">Жалоба</option>
+                            <option value="2">Консультация</option>
+                            <option value="3">Заявление</option>
+                            <option value="4">Предложение</option>
+                        </select>
+                    </div>
+
+                    <!-- Тип обращения  -->
+                    <div class="form-group">
+                        <div class="col-sm-8">
+                        <label for="task_theme_statement_desc">Тема обращения:</label>
+                            {{task.theme_statement}}
+                        <ui-select tagging tagging-label="('new')"
+                                   id="task_theme_statement_desc"
+                                   ng-model="create.task.theme_statement"
+                                   ng-disabled="!create.task.tip_statement"
+                                   ng-change="create.getStmt(create.task.theme_statement)"
+                                   theme="bootstrap"
+                                   title="Тема обращения"
+                        >
+                            <ui-select-match placeholder="Тема обращения...">{{$select.selected.theme_statement}}</ui-select-match>
+                            <ui-select-choices group-by="gp" repeat="item in create.lists | filter: $select.search"
+                                               refresh="refreshStmt(task.tip_statement)"
+                                               refresh-delay="0">
+                                <div ng-bind-html="item.theme_statement | highlight: $select.search"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Далее -->
+                <div class="form-group">
+                    <div class="col-sm-12 text-right"> <hr>
+                        <button class=" btn btn-default"
+                           ng-click="create.saveStmt(create.task)"
+                           ng-disabled="!create.task.theme_statement || create.stmtID">
+                            <i class="fa fa-floppy-o" aria-hidden="true"></i> Сохранить
+                        </button>
+                        &nbsp;&nbsp;
+                        <a class="btn btn-default"
+                           ng-click="create.continueStmt(create.stmtID)"
+                           ng-disabled="!create.task.theme_statement"> Продолжить <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> </a>
+                    </div>
+                </div>
+
+                <div class="col-md-12" ng-show="create.stmtID">
+                    <p>
+                        Обращение сохранено. Для продолжения заполнения РКК нажмите «Продолжить».
+                    </p>
+                </div>
+            </div>
+
+            </form>
+        </fieldset>
+    </div>
+
+    <!-- Сценарии ответа -->
+    <div class="tab-content">
+
+        <div ng-show="create.answered" class="row" style="margin: 15px;">
+            <div class="col-md-12">
+                <h4>Сценарии ответа на вопрос: <em>{{create.answered.theme_statement}}</em></h4>
+
+                <div class="panel-group" ng-model="panels.activePanel" role="tablist" aria-multiselectable="true" bs-collapse>
+                    <div class="panel panel-default" ng-repeat="panel in create.answers track by $index">
+                        <div class="panel-heading" role="tab">
+                            <h4 class="panel-title">
+                                <a bs-collapse-toggle>
+                                    {{ panel.name }}
+                                </a>
+                            </h4>
+                        </div>
+                        <div class="panel-collapse" role="tabpanel" bs-collapse-target>
+                            <div class="panel-body">
+                                <p ng-bind-html="panel.answer"></p>
+                                <hr>
+                                <p> Рекомендованные операторы:</p>
+                            <span ng-repeat="user in panel.login">
+                                <button class="btn btn-default btn-sm" ng-click="renderTab(user.sip_private_identity)">
+                                    <abbr title={{user.username.company}}>{{user.username.fam}}</abbr>
+                                    <span class="label label-default">{{user.sip_private_identity}}</span><br>
+                                    <span class="small">{{user.username.company}}</span>
+                                </button>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="">
+                <div class="col-md-12">
+                    <div class="col-md-8">
+                        <h5>Другие сценарии ответа:</h5>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group" style="padding: 0; margin: 10px 0;">
+                            <input class="form-control"
+                                   id="query"
+                                   ng-model="query"
+                                   placeholder="Введите название"
+                                   size="30" type="text" />
+                        </div>
+                    </div>
+            </div>
+
+            <div class="">
+                <div class="col-md-12">
+                    <div class="panel-group" ng-model="items.activePanel" role="tablist" aria-multiselectable="true" bs-collapse>
+                        <div class="panel panel-default" ng-repeat="item in create.allAnswers | filter:query | limitTo:10">
+                            <div class="panel-heading" role="tab">
+                                <h4 class="panel-title">
+                                    <a bs-collapse-toggle>
+                                        {{ item.name }}
+                                    </a>
+                                </h4>
+                            </div>
+                            <div class="panel-collapse" role="tabpanel" bs-collapse-target>
+                                <div class="panel-body">
+                                    <p ng-bind-html="item.answer"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>

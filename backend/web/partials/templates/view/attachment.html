@@ -1,0 +1,133 @@
+<div class="">
+    <div class="col-md-12" style="padding: 0">
+        <div class="mod-header">
+            <ul class="ops"></ul>
+            <h2 class="detail-title">Прикрепленные файлы</h2>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="col-md-6">
+        <h5>Список прикрепленных файлов</h5>
+        <div ng-show="update.task.attachment.length > 0">
+            Номер прикрепления: {{update.task.attachment[0].n_attach}}<br>
+            Дата прикрепления: {{update.task.attachment[0].date_attach}}<br><br>
+
+            <ol>
+                <li ng-repeat="item in update.task.attachment">
+                        <div class="col-md-8">{{item.file_name}}</div>
+                        <div class="col-md-4">
+                            <a style="cursor: pointer; border-bottom: 1px dashed"
+                                ng-click="update.saveFile(item)">
+                                сохранить <i class="fa fa-download" aria-hidden="true"></i>
+                            </a>
+
+                        </div>
+                </li>
+            </ol>
+        </div>
+
+        <div ng-show="update.task.attachment.length == 0">
+            <p>
+                Нет прикрепленных файлов
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <h5>Прикрепить файлы к обращению</h5>
+
+        <div class="row" ng-controller="UploadCtrl" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
+            <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <!-- Example: nv-file-select="" uploader="{Object}" options="{Object}" filters="{String}" -->
+
+                            <label class="btn btn-block btn-default btn-xs">
+                                Обзор <span ng-show="uploader.queue.length == 0">
+                                &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Выберите файлы&hellip;
+                                </span>
+                                <input type="file"
+                                       class="btn btn-default btn-xs"
+                                       nv-file-select=""
+                                       uploader="uploader"
+                                       style="display: none;"
+                                       multiple  />
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="row" ng-show="uploader.queue.length > 0">
+                        <div class="col-md-12">
+
+                            <div class="row" style="padding: 10px 0;">
+                                <div class="col-md-6">
+
+                                    <div class="input-group">
+                                        <label for="file_num" class="right inline">Номер документа</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               id="file_num"
+                                               ng-model="files.number"
+                                               placeholder="Номер">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                    <label for="file_date" class="right inline">Дата регистрации</label>
+                                    <input type="text"
+                                           id="file_date"
+                                           class="form-control"
+                                           ng-model="files.date"
+                                           data-date-format="dd-MM-yyyy"
+                                           data-autoclose="1"
+                                           placeholder="ДД-ММ-ГГГГ"
+                                           name="date"
+                                           bs-datepicker />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-12" style="margin-bottom: 40px">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th width="50%">Название</th>
+                                    <th ng-show="uploader.isHTML5">Размер</th>
+                                    <th>Действие</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="item in uploader.queue">
+                                    <td><strong>{{ item.file.name }}</strong></td>
+                                    <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                                    <td nowrap>
+                                        <button type="button" class="btn btn-warning btn-xs" ng-click="item.remove()">
+                                            <span class="glyphicon glyphicon-ban-circle"></span> Убрать
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row" ng-show="uploader.queue.length > 0">
+                        <div class="col-md-10" >
+                            <div ng-show="sendFiles" class="callout callout-info" style="margin: 0; padding: 5px 15px 5px 15px;">
+                                <i class="fa fa-check-circle-o" aria-hidden="true"></i> Файлы добавленны к обращению
+                            </div>
+                        </div>
+                        <div class="col-md-2" style="text-align: right">
+                            <button type="button" class="btn btn-tfoms-green btn-xs" ng-click="addFile(update.task, files)">
+                                <span class="glyphicon glyphicon-upload"></span> Добавить
+                            </button>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>

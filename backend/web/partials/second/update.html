@@ -1,0 +1,584 @@
+<style>
+    .ui-select-toggle {height: auto; min-height: 34px;}
+    .ui-select-match-text {white-space: normal;}
+</style>
+
+<div ng-controller="updateCtrl as update" ng-init="update.init()">
+    <ol class="breadcrumb">
+        <li><a href="#/">Главная</a></li>
+        <li class="active">Редактирование обращения № {{update.task.id}}</li>
+    </ol>
+    <div class="bs-callout bs-callout-info">
+        <p>
+            Для закрытия обращения заполните поле <code>«Принятые меры»</code> и нажмите «Закрыть обращение»<br>
+            Обращение будет отправленно администратору контакт-центра для проверки и утверждения результата.
+        </p>
+    </div>
+
+    <!-- Поиск застрахованных по ЕРЗ -->
+    <label class="task-erz" for="erz">Поиск по реестру застрахованных:</label>
+    <input type="checkbox" id="erz" name="erz" ng-model="update.findERZ" style="display: none;" />
+
+    <div class="form-group check-element animate-show" ng-show="update.findERZ">
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border">Поиск застрахованного</legend>
+            <form name="saveFind_ERZ">
+
+                <div class="form-group">
+                    <div class="col-sm-3">
+                        <label for="erz_f_name">Фамилия</label>
+                        <input class="form-control"
+                               id="erz_f_name"
+                               placeholder="Фамилия"
+                               ng-model="update.erz.sName"
+                               size="30" type="text" />
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="erz_name">Имя</label>
+                        <input class="form-control"
+                               id="erz_name"
+                               placeholder="Имя"
+                               ng-model="update.erz.Name"
+                               size="30" type="text" />
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="erz_l_name">Отчество</label>
+                        <input class="form-control"
+                               id="erz_l_name"
+                               placeholder="Отчество"
+                               ng-model="update.erz.pName"
+                               size="30" type="text" />
+                    </div>
+                    <div class="col-sm-3">
+                        <!--<label for="erz_date">Дата рождения</label>-->
+                        <div class="form-group" ng-class="{'has-error': datepickerForm.date.$invalid}">
+                            <label class="control-label" for="erz_date">Дата рождения</label>
+                            <input type="text"
+                                   id="erz_date"
+                                   class="form-control"
+                                   ng-model="update.erz.dateMan"
+                                   data-date-format="ddMMyyyy"
+                                   ui-mask='99-99-9999'
+                                   placeholder="ДД-ММ-ГГГГ"
+                                   name="date"
+                                   bs-datepicker>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-12 text-right">
+                        <!--<input class="btn btn-default" style="margin: 10px 0;"  type="button" ng-click="findERZ=!findERZ" value="Скрыть" >-->
+                        <!--<input class="btn btn-default" style="margin: 10px 0;"  type="button" ng-click="clearERZ()" value="Очистить" >-->
+                        <a class="btn btn-default" ng-click="update.findERZ=!update.findERZ"><i class="fa fa-minus-square-o"></i>&nbsp;Скрыть</a>
+                        <a class="btn btn-default" ng-click="update.clearERZ()"><i class="fa fa-pencil-square-o"></i>&nbsp;Очистить</a>
+                        <a class="btn btn-default" ng-click="update.submitForm()"><i class='fa fa-search'></i>&nbsp;Поиск</a>
+                    </div>
+                </div>
+            </form>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <hr style="margin-bottom: 0;">
+                    <span  ng-show="update.loading" us-spinner="{right:0, top:10, radius:7, lines: 13, length: 4, width:2, }"></span>
+                    <p ng-show="!update.erzData">
+                        Для поиска застрахованного лица введите его данные в форму поиска.<br>
+                        Все поля заполнять необязательно.
+                    </p>
+                    <!-- Список застрахованных -->
+                    <table ng-show="update.erzData" class="table table-hover table-condensed table-bordered">
+                        <thead>
+                        <tr>
+                            <td>Фамилия</td>
+                            <td>Имя</td>
+                            <td>Отчество</td>
+                            <td>Дата рождения</td>
+                            <td>Страховая</td>
+                            <td>Прикрепление к МО</td>
+                            <td>Действие</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="row in update.erzData">
+                            <td>{{row.sName}}</td>
+                            <td>{{row.Name}}</td>
+                            <td>{{row.pName}}</td>
+                            <td> {{update.formatDate(row.dateMan) | date:'dd-MM-yyyy'}}</td>
+                            <td ng-switch="row.reestr.orgId">
+                                <span ng-switch-when="1">ООО "СК "ИНГОССТРАХ-М" </span>
+                                <span ng-switch-when="4">ООО ВТБ МС</span>
+                                <span ng-switch-default></span>
+                            </td>
+                            <td>
+                                <span style="font-size: 12px;">{{row.stik.mo.NAMMO}}</span>
+                                <br>
+                                <span style="font-size: 10px;">{{row.stik.mo.ADRESMO}}</span>
+                            </td>
+                            <td>
+                                <a class="exit" style="font-size: 14px; cursor: pointer;" ng-click="update.setERZ(row)">Применить</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+
+    <fieldset class="scheduler-border">
+        <legend class="scheduler-border">Регистрационная карта  <span class="label label-tfoms-orange"></span></legend>
+
+        <span  ng-show="loading" us-spinner="{right:50, top:50, radius:7, lines: 13, length: 4, width:2 }" style="position: absolute; top:50%; left:50%;"></span>
+        <div class="row" ng-class="{load_page: loading}">
+            <form name="saveNewTaskData" ng-submit="submit()" >
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mod-header">
+                                <ul class="ops"></ul>
+                                <h2 class="detail-title">Обращение</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row pd5">
+                        <div class="col-md-4">
+                            <strong class="name">Регистрационный номер:</strong>
+                        </div>
+                        <div class="col-md-8">
+                        <span class="value">
+                            {{update.task.id}}
+                        </span>
+                        </div>
+                    </div>
+
+                    <div class="row pd5">
+                        <div class="col-md-4">
+                            <strong class="name">Ответственный оператор:</strong>
+                        </div>
+                        <div class="col-md-8">
+                        <span class="value">
+                            {{update.task.user.fam || ''}} {{update.task.user.im || ''}} {{update.task.user.ot || ''}}
+                        </span>
+                        </div>
+                    </div>
+
+                    <div class="row pd5">
+                        <div class="col-md-4">
+                            <strong class="name">Дата обращения:</strong>
+                        </div>
+                        <div class="col-md-8">
+                        <span class="value">
+                            {{update.task.statement_date | date:'dd-MM-yyyy HH:mm:ss'}}
+                        </span>
+                        </div>
+                    </div>
+
+                    <div class="row pd5">
+                        <div class="col-md-4">
+                            <strong class="name">Форма обращения:</strong>
+                        </div>
+                        <div class="col-md-8" ng-switch="update.task.form_statement" >
+                            <span class="value" ng-switch-when = 0>
+                                Устное
+                            </span>
+                            <span class="value" ng-switch-when = 1>
+                                Письменное
+                            </span>
+                            <span ng-switch-default>
+                               Устное
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row pd5">
+                        <div class="col-md-4">
+                            <strong class="name">Тип обращения:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="value">
+                                 <select class="form-control"
+                                         ng-change="update.refreshStmt(update.task.tip_statement); update.clear();"
+                                         ng-model="update.task.tip_statement">
+                                    <option
+                                            ng-repeat="tip in update.tipStmt"
+                                            value="{{tip.value}}"
+                                    >
+                                      {{tip.text}}
+                                    </option>
+                                </select>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row pd5">
+                        <div class="col-md-4">
+                            <strong class="name">Тема обращения:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="value">
+                                    <ui-select tagging tagging-label="('new')"
+                                               id="task_theme_statement"
+                                               ng-model="update.task.theme"
+                                               ng-disabled="!update.task.tip_statement"
+                                               theme="bootstrap"
+                                               title="Тема обращения"
+                                    >
+                                    <ui-select-match placeholder="Тема обращения...">
+                                        {{ $select.selected.theme_statement || $select.selected }}
+                                    </ui-select-match>
+                                    <ui-select-choices group-by="gp" repeat="item in update.lists | filter: $select.search"
+                                                       refresh="update.refreshStmt(update.task.tip_statement)"
+                                                       refresh-delay="0">
+                                        <div ng-bind-html="item.theme_statement | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row pd5" ng-show="task.data.theme_statement_description">
+                        <div class="col-md-4">
+                            <strong class="name">Описание предложения:</strong>
+                        </div>
+                        <div class="col-md-8">
+                    <span class="value">
+                        {{update.task.data.theme_statement_description}}
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="row pd5">
+                        <div class="col-md-4">
+                            <strong class="name">Комментарий обращения:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="value">
+                                <textarea id="task_theme_statement_desc"
+                                          class="form-control"
+                                          style="width: 100%; max-width: 100%;"
+                                          rows="2"
+                                          placeholder="Комментарий..."
+                                          ng-model="update.task.theme_statement_description">
+                                </textarea>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row pd5">
+                        <div class="col-md-4">
+                            <strong class="name">Рассмотреть до:</strong>
+                        </div>
+                        <div class="col-md-8">
+                    <span class="value">
+                        {{update.task.expired | date:'dd-MM-yyyy'}}
+                    </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Инфо о обратившемся-->
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mod-header">
+                                <ul class="ops"></ul>
+                                <h2 class="detail-title">Информация об обратившемся</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row pd5">
+                        <div class="col-md-4">
+                            <strong class="name">Фамилия:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="value">
+                                <input class="form-control"
+                                       id="task_f_name"
+                                       ng-model="update.task.deffered.fam"
+                                       placeholder="Фамилия"
+                                       size="30"
+                                       type="text" />
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row pd5">
+                        <div class="col-md-4">
+                            <strong class="name">Имя:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="value">
+                                <input class="form-control"
+                                       id="task_name"
+                                       ng-model="update.task.deffered.im"
+                                       placeholder="Имя"
+                                       size="30"
+                                       type="text" />
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row pd5">
+                        <div class="col-md-4">
+                            <strong class="name">Отчество:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="value">
+                                 <input class="form-control"
+                                        id="task_l_name"
+                                        ng-model="update.task.deffered.ot"
+                                        placeholder="Отчество"
+                                        size="30"
+                                        type="text" />
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row pd5">
+                        <div class="col-md-4">
+                            <strong class="name">Дата рождения:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="value">
+                                 <input type="text"
+                                        id="task_bith_date"
+                                        class="form-control"
+                                        ng-model="update.task.deffered.dt"
+                                        data-date-format="dd-MM-yyyy"
+                                        data-date-type="number"
+                                        data-autoclose="1"
+                                        placeholder="ДД-ММ-ГГГГ"
+                                        name="date"
+                                        bs-datepicker>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row pd5">
+                        <div class="col-md-4">
+                            <strong class="name">Контактный телефон:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="value">
+                                 <input class="form-control"
+                                        id="defer_phone"
+                                        placeholder="Контактный телефон"
+                                        ng-model="update.task.deffered.phone"
+                                        size="30"
+                                        type="text"
+                                        numbers-only
+                                 />
+                            </span>
+                        </div>
+                    </div>
+
+                    <!--если указан представитель-->
+                <span>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mod-header">
+                                <ul class="ops"></ul>
+                                <h2 class="detail-title">Представитель обратившегося</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row pd5">
+                        <div class="col-md-4">
+                            <strong class="name">ФИО:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="value">
+                                 <input class="form-control"
+                                        id="add_fio"
+                                        placeholder="ФИО представителя"
+                                        ng-model="update.task.deffered.add_fio"
+                                        size="30"
+                                        type="text"
+                                 />
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row pd5">
+                        <div class="col-md-4">
+                            <strong class="name">Телефон:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="value">
+                              <input class="form-control"
+                                     id="add_phone"
+                                     placeholder="Телефон представителя"
+                                     ng-model="update.task.deffered.add_phone"
+                                     size="30"
+                                     type="text"
+                                     numbers-only />
+                            </span>
+                        </div>
+                    </div>
+                </span>
+
+                </div>
+
+                <!-- Связанные обращения  -->
+                <div class="col-md-12" ng-show="task.related.length > 0" >
+                    <div class="row">
+                        <div class="col-md-12" style="padding: 0">
+                            <div class="mod-header">
+                                <ul class="ops"></ul>
+                                <h2 class="detail-title">История обращений</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <td>Номер</td>
+                            <td>Тип обращения</td>
+                            <td>Тема</td>
+                            <td>Фио обратившегося</td>
+                            <td>Дата обращения</td>
+                            <td>Результат</td>
+                            <td>Просмотр</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in task.related">
+                            <td>{{item.related_id}}</td>
+                            <td>{{item.stmt_rel.group.name}}</td>
+                            <td>{{item.stmt_rel.theme.theme_statement}}</td>
+                            <td>{{item.stmt_rel.deffered.fam}}&nbsp;{{item.stmt_rel.deffered.im}}&nbsp;{{item.stmt_rel.deffered.ot}}</td>
+                            <td>{{item.stmt_rel.statement_date}}</td>
+                            <td>{{item.stmt_rel.stmt_status.name}}</td>
+                            <td>
+                                <button type="button" class="exit"
+                                        data-animation="am-fade-and-scale"
+                                        data-placement="center"
+                                        data-template-url="/partials/first/tpl/modal.html"
+                                        bs-modal="modal"
+                                        ng-click="showModalParams(item)"
+                                >
+                                    <small>Открыть</small>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Файлы прикрепленные -->
+                <div class="col-sm-12"
+                     ng-include src="'/partials/templates/view/attachment.html'">
+                </div>
+
+                <div class="col-sm-12">
+
+                    <div class="col-md-12" style="padding: 0">
+                        <div class="mod-header">
+                            <ul class="ops"></ul>
+                            <h2 class="detail-title">Принятые меры</h2>
+                        </div>
+                    </div>
+
+                    <!-- Завершение обращения -->
+                    <div class="col-md-5" style="padding: 0">
+
+                        <div class="form-group">
+                            <label for="task_result">Результат обращения:</label>
+                            <select id="task_result"
+                                    class="form-control"
+                                    name="task_result"
+                                    ng-model="update.task.data.accept"
+                                    ng-options="state.id as state.name for state in update.state_result"
+                                    ng-required="true">
+                                <option value=''>-  Результат обращения  -</option>
+                            </select>
+                        </div>
+
+                        <!-- Форма обращения -->
+                        <div class="form-group" ng-show="update.task.tip_statement == 1">
+                            <label>Тип жалобы:</label>
+                            <div class="btn-group" ng-model="update.task.plaint" bs-radio-group>
+                                <label class="btn btn-default">
+                                    <input type="radio" class="btn btn-default" value="0"> Обоснованная</label>
+                                <label class="btn btn-default">
+                                    <input type="radio" class="btn btn-default" value="1"> Необоснованная</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group" ng-if="update.task.data.accept == 12">
+                            <label for="expired_1">Дата завершения</label>
+                            <input type="text"
+                                   id="expired_1"
+                                   class="form-control"
+                                   ng-model="update.task.data.expired_1"
+                                   data-date-format="dd-MM-yyyy"
+                                   placeholder="ДД-ММ-ГГГГ"
+                                   name="date"
+                                   bs-datepicker>
+                        </div>
+
+                        <div class="form-group" ng-if="update.task.data.accept == 8">
+                            <label for="user_o">Введите вн. номер специалиста</label>
+                            <ui-select tagging tagging-label="('new')"
+                                       id="user_o"
+                                       ng-model="update.task.transfer"
+                                       theme="bootstrap"
+                                       title="Операторы" >
+                                <ui-select-match placeholder="Выберите оператора...">{{$select.selected.sip_dispaly_name}}</ui-select-match>
+                                <ui-select-choices group-by="gp" repeat="item in update.listUsers | filter: $select.search"
+                                                   refresh="update.refreshUsers(task)"
+                                                   refresh-delay="0">
+                                    <div ng-bind-html="update.userHtml(item) | highlight: $select.search"></div>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+
+                    </div>
+
+                    <!-- Комментарий к завершению -->
+                    <div class="col-md-7">
+                        <div class="col-sm-12" style="padding: 0">
+                            <div class="form-group">
+                                <label for="taken_measures">Описание:</label>
+                        <textarea id="taken_measures"
+                                  class="form-control"
+                                  style="width: 100%;"
+                                  rows="4"
+                                  placeholder="Краткое описание принятых мер..."
+                                  ng-model="update.task.data.accept_msg">
+                        </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-12 text-right" ng-if="update.task.data.accept == 8">
+                        <!-- <button ng-click="save()" >Save</button> -->
+                        <input class="btn btn-default"
+                               style="margin: 10px 0;"
+                               ng-disabled="saveNewTaskData.$invalid"
+                               value="Перевести">
+                    </div>
+
+                    <div class="col-sm-12 text-right" ng-if="update.task.data.accept != 8">
+                        <!-- <button ng-click="save()" >Save</button> -->
+                        <input class="btn btn-default"
+                               style="margin: 10px 0;"
+                               type="button"
+                               ng-click="update.update(update.task)"
+                               value="Сохранить">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </fieldset>
+</div>

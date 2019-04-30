@@ -1,0 +1,61 @@
+<!-- отсроченный ответ -->
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="mod-header">
+                <ul class="ops"></ul>
+                <h2 class="detail-title">Отсроченный ответ</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12" style="padding: 0">
+        <div class="callout callout-info">
+            Данное обращение имеет статус <span class="label label-danger">Отсроченный ответ</span> <br>
+            Оператор должен связаться с обратившемся для разъяснения результата обращения или уточнения деталей обращения. <br>
+            Далее оператор принимает решение о закрытии обращения или изменении статуса на <span class="label label-tfoms-orange">В работе</span>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        Телефонный номер с которого было зарегистрированно обращение: {{task.deffered.phone}} <br>
+    </div>
+    <div class="col-md-4">
+        <div class="input-group">
+            <input type="text" class="form-control" ng-model="task.deffered.phone" placeholder="Введите номер">
+                <span class="input-group-btn">
+                     <div class="btn-group">
+                         <input type="button" class="btn btn-tfoms-green" value="Вызов" ng-click="callDefferred(task.deffered.phone)">
+                     </div>
+                     <div class="btn-group">
+                         <input type="button" style="margin: 0; vertical-align:middle; height: 100%;" class="btn btn-tfoms-red" value="Сброс" onclick='sipHangUp();' />
+                     </div>
+                </span>
+        </div>
+    </div>
+
+    <!-- Принятые меры -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="mod-header">
+                <ul class="ops"></ul>
+                <h2 class="detail-title">Принятые меры</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <label class="radio-inline">
+            <input type="radio" name="result" ng-model="task.saveDeffered" ng-value="0" ng-checked >Закрыть обращение
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="result" ng-model="task.saveDeffered" ng-value="1">Изменить статус обращения на <span class="label label-tfoms-orange">В работе</span>
+        </label>
+    </div>
+
+    <div class="col-md-4">
+        <input type="button" class="btn btn-default" ng-click="saveDeffered(task)" value="Сохранить" >
+    </div>
+
+</div>

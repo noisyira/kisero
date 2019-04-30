@@ -1,0 +1,33 @@
+<div class="tab-content">
+    <div class="row" style="margin: 15px;">
+        <div class="col-md-8">
+            <p>
+                Для переадресации обращения на ответсвенного специалиста необходимо указать его внутренний номер.<br>
+                Найти внутренний номер нужного специалиста можно в
+                <a type="button"
+                    class="phone_book"
+                    style="font-size: 14px;"
+                    data-template-url="../../partials/first/tpl/phonebook.html"
+                    data-placement="right"
+                    data-animation="am-slide-right"
+                    bs-aside="aside"
+                    data-container="body">
+                Телефонном справочнике
+                </a>
+            </p>
+        </div>
+        <div class="col-sm-4 text-right">
+            <div class="input-group">
+                <input class="form-control"
+                       id="operator"
+                       ng-model="task.send_user"
+                       placeholder="Введите вн. номер специалиста"
+                       size="30"
+                       type="text" />
+                                <span class="input-group-btn">
+                                    <button id="btnTransfer" class="btn btn-default" ng-click="send(task)" type="button">Перевести</button>
+                                </span>
+            </div><!-- /input-group -->
+        </div>
+    </div>
+</div>

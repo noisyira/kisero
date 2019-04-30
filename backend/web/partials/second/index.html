@@ -1,0 +1,152 @@
+<div class="row" ng-controller="tableCtrl as table">
+    <legend>Электронный журнал</legend>
+    <div class="col-md-12">
+        <div class="bs-callout bs-callout-info">
+            <h4>Редактирование обращений</h4>
+            Для завершения обращения заполните поле <code>«Принятые меры»</code> и измените его статус на
+            <span class="label label-default">Завершен</span> <br>
+            Обращение будет отправленно администратору контакт-центра для проверки и утверждения результата.
+            </p>
+        </div>
+
+        <span us-spinner spinner-key="spinner"></span>
+
+        <div class="row">
+            <div class="col-xs-12" ng-init="table.listInit()">
+                <!-- ngModel is optional -->
+                <div class="panel-group" ng-model="panels.activePanel" role="tablist" ng-init="isGlobalFilterOpen = true;" bs-collapse>
+                    <div class="panel panel-default" is-open="isGlobalFilterOpen">
+                        <div class="panel-heading" role="tab">
+                            <h4 class="panel-title">
+                                <a bs-collapse-toggle ng-click="status=!status" style="font-size: 16px; color: rgb(51, 122, 183);text-decoration: none; border-bottom: 1px dashed; cursor: pointer;">
+                                   Фильтр
+                                </a>
+                                <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status, 'glyphicon-chevron-right': !status}"></i>
+                            </h4>
+                        </div>
+                        <div class="panel-collapse" role="tabpanel" bs-collapse-target>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-6">
+                                        <form class="form-horizontal" name="demo.nameForm">
+                                            <div class="form-group col-xs-12" ng-init="table.refreshUsers()">
+                                                <label>Ответственный оператор</label>
+                                                <select class="form-control" ng-model="usersTable.filter().user_o">
+                                                    <option ng-repeat="item in table.listUsers" value="{{item.id}}">
+                                                        <span>{{item.fam}}</span>&nbsp;<span>{{item.im}}</span>&nbsp;<span>{{item.ot}}</span>
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-6">
+                                        <div class="form-group col-xs-12">
+                                            <label>Форма обращения</label>
+                                            <div class="btn-group" ng-model="usersTable.filter().form_statement" bs-radio-group>
+                                                <label class="btn btn-default"><input type="radio" class="btn btn-default" ng-disabled="$filterRow.disabled"> Все</label>
+                                                <label class="btn btn-default"><input type="radio" class="btn btn-default" value="0"> Устные</label>
+                                                <label class="btn btn-default"><input type="radio" class="btn btn-default" value="1"> Письменные</label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-6" ng-init="table.refreshStmt()">
+                                        <div class="form-group col-xs-12">
+                                            <label>Тема обращения</label>
+                                            <select class="form-control"
+                                                    ng-model="usersTable.filter().theme_statement"
+                                                    ng-options="value.key_statement as value.theme_statement group by value.group.name for value in table.lists | orderBy:['key_statement']"
+                                            >
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-lg-4 col-md-6">
+                                        <form class="form-horizontal">
+                                            <div class="form-group col-xs-12" ng-init="table.refreshUsers()">
+                                                <label>Фамилия обратившегося</label>
+                                                <input type="text" class="form-control" ng-model="usersTable.filter().deffered.fam" />
+
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button class="btn btn-default pull-right"
+                                                ng-click="table.clearFilters()">Очистить фильтр
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table ng-table="usersTable" show-filter="true" class="table table-condensed table-bordered table-striped">
+            <tr ng-repeat="row in $data">
+                <td style="width:70px;" data-title="'№'" filter="{id: 'text'}" sortable="'statement_date'" >{{row.id}}</td>
+                <td data-title="'ФИО заявителя'"
+                >
+                    <span ng-bind-html="fioStmt(row.deffered)"></span>
+                </td>
+                <td data-title="'Вид обращения'" sortable="'statement'" >{{row.send.name}}</td>
+                <td data-title="'Тип обращения'"
+                    sortable="'tip_statement'"
+                    filter="{tip_statement: 'select'}"
+                    filter-data="table.tips"
+                >{{row.group.name}}</td>
+                <td data-title="'Дата'"
+                    data-time-format="'d-m-Y H:i:s'"
+                    sortable="'statement_date'"
+                >
+                    {{formatDate(row.statement_date) | date:'dd-MM-yyyy HH:mm:ss'}}
+                </td>
+                <td data-title="'Статус'" sortable="'status'"  ng-switch="row.status">
+                    <span class="label label-default" ng-switch-when="2">{{row.stmt_status.name}}</span>
+                    <span class="label label-default" ng-switch-when="4">{{row.stmt_status.name}}</span>
+                    <span class="label label-default" ng-switch-when="3">{{row.stmt_status.name}}</span>
+                    <span class="label label-info" ng-switch-when="5">{{row.stmt_status.name}}</span>
+                    <span class="label label-danger" ng-switch-when="6">{{row.stmt_status.name}}</span>
+                    <span class="label label-tfoms-orange" ng-switch-when="1">{{row.stmt_status.name}}</span>
+                </td>
+
+                <td data-title="'Действие'" ng-switch="row.status">
+                    <span ng-switch-when="1">
+                        <a class="exit" ng-click="invoke(row)" style="font-size: 14px; cursor: pointer;">
+                            редактирование
+                        </a>
+                    </span>
+                    <span ng-switch-when="5">
+                        <a class="exit" ng-click="invoke(row)" style="font-size: 14px; cursor: pointer;">
+                            редактирование
+                        </a>
+                    </span>
+                    <span ng-switch-when="2">
+                        <a href="#/stmt?id={{row.id}}" class="exit" style="font-size: 14px; cursor: pointer;">
+                            просмотр
+                        </a>
+                    </span>
+                    <span ng-switch-when="3">
+                        <a href="#/stmt?id={{row.id}}" class="exit" style="font-size: 14px; cursor: pointer;">
+                            просмотр
+                        </a>
+                    </span>
+                    <span ng-switch-when="6">
+                        <a href="#/stmt?id={{row.id}}" class="exit" style="font-size: 14px; cursor: pointer;">
+                            просмотр
+                        </a>
+                    </span>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

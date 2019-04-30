@@ -1,0 +1,78 @@
+<div class="row" ng-controller="tableCtrl as table">
+    <legend style="margin-bottom: 5px;">Электронный журнал</legend>
+    <div class="col-md-12">
+        <div class="callout callout-info">
+            <h4>Редактирование обращений</h4>
+            Для завершения обращения заполните поле <code>«Принятые меры»</code> и измените его статус на
+            <span class="label label-default">Завершен</span> <br>
+            Обращение будет отправленно администратору контакт-центра на проверку.
+            </p>
+        </div>
+
+        <div class="col-md-12" style="padding: 0;" >
+            <span us-spinner spinner-key="spinner"></span>
+
+            <table ng-table="usersTable" show-filter="true" class="table table-condensed table-bordered table-striped">
+                <tr ng-repeat="row in $data">
+                    <td style="width:70px;" data-title="'№'" filter="{id: 'text'}" >{{row.id}}</td>
+                    <td data-title="'ФИО заявителя'" >
+                        <span ng-bind-html="fioStmt(row.deffered)"></span>
+                    </td>
+                    <td data-title="'Вид обращения'" >{{row.send.name}}</td>
+                    <td data-title="'Тип обращения'"
+                        filter="{tip_statement: 'select'}"
+                        filter-data="table.tips"
+                    >{{row.group.name}}</td>
+                    <td data-title="'Дата'"
+                        data-time-format="'d-m-Y H:i:s'"
+                    >
+                        {{formatDate(row.statement_date) | date:'dd-MM-yyyy HH:mm:ss'}}
+                    </td>
+                    <td data-title="'Статус'" ng-switch="row.status">
+                        <span class="label label-default" ng-switch-when="2">{{row.stmt_status.name}}</span>
+                        <span class="label label-default" ng-switch-when="4">{{row.stmt_status.name}}</span>
+                        <span class="label label-default" ng-switch-when="3">{{row.stmt_status.name}}</span>
+                        <span class="label label-info" ng-switch-when="5">{{row.stmt_status.name}}</span>
+                        <span class="label label-danger" ng-switch-when="6">{{row.stmt_status.name}}</span>
+                        <span class="label label-tfoms-orange" ng-switch-when="1">{{row.stmt_status.name}}</span>
+                    </td>
+
+                    <td data-title="'Действие'" ng-switch="row.status">
+                    <span ng-switch-when="1">
+                        <a class="exit" ng-click="invoke(row)" style="font-size: 14px; cursor: pointer;">
+                            редактирование
+                        </a>
+                    </span>
+                    <span ng-switch-when="5">
+                        <a class="exit" ng-click="invoke(row)" style="font-size: 14px; cursor: pointer;">
+                            редактирование
+                        </a>
+                    </span>
+                    <span ng-switch-when="2">
+                        <a href="#/stmt?id={{row.id}}" class="exit" style="font-size: 14px; cursor: pointer;">
+                            просмотр
+                        </a>
+                    </span>
+                    <span ng-switch-when="3">
+                        <a href="#/stmt?id={{row.id}}" class="exit" style="font-size: 14px; cursor: pointer;">
+                            просмотр
+                        </a>
+                    </span>
+                    <span ng-switch-when="6">
+                        <a href="#/stmt?id={{row.id}}" class="exit" style="font-size: 14px; cursor: pointer;">
+                            просмотр
+                        </a>
+                    </span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="col-md-12" style="padding: 0;" ng-show="total == 0">
+            <p>
+                На текущий момент нет активных обращений.
+            </p>
+        </div>
+
+    </div>
+</div>

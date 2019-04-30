@@ -1,0 +1,105 @@
+<div class="tab-content">
+    <div ng-show="!answered" class="row" style="margin: 15px;">
+        <div class="col-md-12">
+            <h4>
+                Выберите тип обращения и тему...
+            </h4>
+            <p>
+                Для отображения <code>«Cценария ответа»</code> необходимо указать <code>«Тип обращения»</code> и <code>«Тему обращения»</code> <br>
+                Если <code>«Сценария ответа»</code> недостаточно для удовлетворения обращения, ниже представлен рекомендованный список специалистов
+                для переадресации и углубленного ответа.
+            </p>
+            <p>
+                Пример рекомендованных специалистов:<br>
+                <button class="btn btn-default btn-sm" ng-click="renderTab(1003)">
+                    <abbr title="Отдел сопровождения баз данных и межведомственного взаимодействия">Уракин Д.В.</abbr>
+                    <span class="label label-default">1003</span></button>
+                <button class="btn btn-default btn-sm" ng-click="renderTab(1001)">
+                    <abbr title="Страховая компания «Ингострах-М»">Иванов И.И.</abbr>
+                    <span class="label label-default">1001</span></button>
+            </p>
+        </div>
+    </div>
+    <div ng-show="answered" class="row" style="margin: 15px;">
+        <div class="col-md-12">
+            <h4>Сценарии ответа на вопрос: <em>{{answered.theme_statement}}</em></h4>
+
+            <div class="panel-group" ng-model="panels.activePanel" role="tablist" aria-multiselectable="true" bs-collapse>
+                <div class="panel panel-default" ng-repeat="panel in answers">
+                    <div class="panel-heading" role="tab">
+                        <h4 class="panel-title">
+                            <a bs-collapse-toggle>
+                                {{ panel.name }}
+                            </a>
+                        </h4>
+                    </div>
+                    <div class="panel-collapse" role="tabpanel" bs-collapse-target>
+                        <div class="panel-body">
+                            <p ng-bind-html="panel.answer"></p>
+                            <hr>
+                            <p> Рекомендованные операторы:</p>
+                            <span ng-repeat="user in panel.login">
+                                <button class="btn btn-default btn-sm" ng-click="renderTab(user.sip_private_identity)">
+                                    <abbr title={{user.username.company}}>{{user.username.fam}}</abbr>
+                                    <span class="label label-default">{{user.sip_private_identity}}</span><br>
+                                    <span class="small">{{user.username.company}}</span>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="col-md-8">
+                <h5>Другие сценарии ответа:</h5>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group" style="padding: 0; margin: 10px 0;">
+                    <input class="form-control"
+                           id="query"
+                           ng-model="query"
+                           placeholder="Введите название"
+                           size="30" type="text" />
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="panel-group" ng-model="panels.activePanel" role="tablist" aria-multiselectable="true" bs-collapse>
+                    <div class="panel panel-default" ng-repeat="item in allAnswers | filter:query | limitTo:10">
+                        <div class="panel-heading" role="tab">
+                            <h4 class="panel-title">
+                                <a bs-collapse-toggle>
+                                    {{ item.name }}
+                                </a>
+                            </h4>
+                        </div>
+                        <div class="panel-collapse" role="tabpanel" bs-collapse-target>
+                            <div class="panel-body">
+                                <p ng-bind-html="item.answer"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="row text-right" style="margin: 15px;">
+        <div class="form-group">
+            <div class="col-md-12">
+                <legend></legend>
+                <!-- <button ng-click="save()" >Save</button> -->
+                <input class="btn btn-tfoms-blue"
+                       type="submit"
+                       ng-show="answered"
+                       ng-click="save(task)"
+                       value="Сохранить"
+                >
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,46 @@
+<div class="tab-content">
+    <div ng-show="!answered" class="row" style="margin: 15px;">
+        <div class="col-md-12">
+            <h4>
+                Выберите тип обращения и тему...
+            </h4>
+            <p>
+                Для отображения <code>«Cценария ответа»</code> необходимо указать <code>«Тип обращения»</code> и <code>«Тему обращения»</code> <br>
+                Если <code>«Сценария ответа»</code> недостаточно для удовлетворения обращения, ниже представлен рекомендованный список специалистов
+                для переадресации и углубленного ответа.
+            </p>
+            <p>
+                Пример рекомендованных специалистов:<br>
+                <button class="btn btn-default btn-sm" ng-click="renderTab(1003)">
+                    <abbr title="Отдел сопровождения баз данных и межведомственного взаимодействия">Уракин Д.В.</abbr>
+                    <span class="label label-default">1003</span></button>
+                <button class="btn btn-default btn-sm" ng-click="renderTab(1001)">
+                    <abbr title="Страховая компания «Ингострах-М»">Иванов И.И.</abbr>
+                    <span class="label label-default">1001</span></button>
+            </p>
+        </div>
+    </div>
+    <div ng-show="answered" class="row" style="margin: 15px;">
+        <div class="col-md-12">
+            <h4>Сценарий ответа на вопрос: <em>{{answered.theme_statement}}</em></h4>
+            <p>
+                Текст сценария ответа на обращение...
+            </p>
+        </div>
+    </div>
+
+    <div class="row text-right" style="margin: 15px;">
+        <div class="form-group">
+            <div class="col-md-12">
+                <legend></legend>
+                <!-- <button ng-click="save()" >Save</button> -->
+                <input class="btn btn-tfoms-blue"
+                       type="submit"
+                       ng-show="answered"
+                       ng-click="save(task)"
+                       value="Сохранить"
+                >
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+<div class="row" ng-controller="tableCtrl as table">
+<legend>Текущие обращения</legend>
+    <div class="col-md-12">
+        <div class="bs-callout bs-callout-info">
+            <h4>Редактирование обращений</h4>
+                Для завершения обращения заполните поле <code>«Принятые меры»</code> и измените его статус на
+                <span class="label label-tfoms-orange">Завершенно</span> <br>
+                Обращение будет отправленно администратору контакт-центра для проверки и утверждения результата.
+            </p>
+        </div>
+        <table ng-table="table.tableParams" class="table table-condensed table-bordered table-striped">
+            <tr ng-repeat="row in dataset">
+                <td data-title="'№ обращения'" filter="{id: 'text'}" sortable="'id'">{{row.id}}</td>
+                <td data-title="'Вид обращения'" filter="{statement: 'text'}" sortable="'statement'">{{row.statement}}</td>
+                <td data-title="'Дата'"
+                    data-time-format="'d-m-Y H:i:s'"
+                    sortable="'statement_date'">
+                    {{formatDate(row.statement_date) | date:'dd-MM-yyyy HH:mm:ss'}}
+                </td>
+                <td data-title="'Статус'" filter="{status: 'text'}" sortable="'status'">
+                    <span class="label label-tfoms-orange">
+                        {{row.status}}
+                    </span>
+                </td>
+                <td data-title="'Действие'" ng-click=""><span>Редактирование</span></td>
+            </tr>
+        </table>
+    </div>
+</div>

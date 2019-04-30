@@ -1,0 +1,342 @@
+<style>
+    /* Style when highlighting a search. */
+    .ui-select-highlight {
+        font-weight: bold;
+    }
+
+
+    /* Select2 theme */
+
+
+    /* Selectize theme */
+
+    /* Fix input width for Selectize theme */
+    .selectize-control > .selectize-input > input {
+        width: 100%;
+    }
+
+    /* Fix dropdown width for Selectize theme */
+    .selectize-control > .selectize-dropdown {
+        width: 100%;
+    }
+
+
+    /* Bootstrap theme */
+
+    /* Fix Bootstrap dropdown position when inside a input-group */
+    .input-group > .ui-select-bootstrap.dropdown {
+        /* Instead of relative */
+        position: static;
+    }
+
+    .input-group > .ui-select-bootstrap > input.ui-select-search.form-control {
+        border-radius: 4px; /* FIXME hardcoded value :-/ */
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .ui-select-bootstrap > .ui-select-match {
+        /* Instead of center because of .btn */
+        text-align: left;
+    }
+
+    .ui-select-bootstrap > .ui-select-match > .caret {
+        position: absolute;
+        top: 45%;
+        right: 15px;
+    }
+
+    .ui-select-bootstrap > .ui-select-choices {
+        width: 100%;
+    }
+
+    /* See Scrollable Menu with Bootstrap 3 http://stackoverflow.com/questions/19227496 */
+    .ui-select-bootstrap > .ui-select-choices {
+        height: auto;
+        max-height: 200px;
+        overflow-x: hidden;
+    }
+</style>
+<div class="tab-content">
+    <div class="row" style="margin: 15px;">
+
+        <!--Личный данные для отсроченного ответа-->
+        <div class="col-md-6">
+
+            <!-- Отсроченный ответ -->
+            <div class="row" style="margin:10px 0;">
+                <div class="form-group">
+                    <div class="col-md-5"></div>
+
+                    <div class="col-md-7 columns">
+                        <input
+                                id="task.defer.def"
+                                ng-model="task.defer.def"
+                                type="checkbox"
+                        />&nbsp;&nbsp;
+                        <label for="task.defer.def" class="right inline">Отсроченный ответ</label>
+                    </div>
+                </div>
+            </div>
+
+            <!--Фамилия-->
+            <div class="row" style="margin:10px 0;">
+                <div class="form-group">
+                    <div class="col-md-5" style="text-align:right; margin: 5px 0;">
+                        <label for="task_f_name" class="right inline">Фамилия</label>
+                    </div>
+
+                    <div class="col-md-7 columns">
+                        <input type="hidden" ng-model="task.defer.enp" />
+                        <input class="form-control"
+                               id="task_f_name"
+                               ng-model="task.defer.fam"
+                               placeholder="Фамилия"
+                               size="30"
+                               type="text" />
+                    </div>
+                </div>
+            </div>
+
+            <!--Имя-->
+            <div class="row" style="margin:10px 0;">
+                <div class="form-group">
+                    <div class="col-md-5" style="text-align:right; margin: 5px 0;">
+                        <label for="task_name" class="right inline">Имя</label>
+                    </div>
+                    <div class="col-md-7 columns">
+                        <input class="form-control"
+                               id="task_name"
+                               ng-model="task.defer.im"
+                               placeholder="Имя"
+                               size="30"
+                               type="text" />
+                    </div>
+                </div>
+            </div>
+
+            <!--Отчество-->
+            <div class="row" style="margin:10px 0;">
+                <div class="form-group">
+                    <div class="col-md-5" style="text-align:right; margin: 5px 0;">
+                        <label for="task_l_name" class="right inline">Отчество</label>
+                    </div>
+                    <div class="col-md-7 columns">
+                        <input class="form-control"
+                               id="task_l_name"
+                               ng-model="task.defer.ot"
+                               placeholder="Отчество"
+                               size="30"
+                               type="text" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дата рождения -->
+            <div class="row" style="margin:10px 0;">
+                <div class="form-group">
+                    <div class="col-md-5" style="text-align:right; margin: 5px 0;">
+                        <label for="task_bith_date" class="right inline">Дата рождения</label>
+                    </div>
+
+                    <div class="col-md-7">
+                        <input type="text"
+                               id="task_bith_date"
+                               class="form-control"
+                               ng-model="task.defer.dt"
+                               data-date-format="dd-MM-yyyy"
+                               data-date-type="number"
+                               data-autoclose="1"
+                               placeholder="ДД-ММ-ГГГГ"
+                               name="date"
+                               bs-datepicker>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Адрес по ЕРЗ -->
+            <div class="row" style="margin:10px 0;" ng-show="task.defer.okato_erz">
+                <div class="form-group">
+                    <div class="col-md-5" style="text-align:right; margin: 5px 0;">
+                        <label for="task_okato_name" class="right inline">Место обращения</label>
+                    </div>
+                    <div class="col-md-7 columns">
+                        <input type="hidden" ng-model="task.defer.okato" />
+                        <textarea class="form-control"
+                                  id="task_okato_name"
+                                  style="width: 100%; max-width: 100%;"
+                                  ng-model="task.defer.okato_name"
+                                  placeholder="Место обращения"
+                                  rows="2"
+                        ></textarea>
+                        <small style="float: right;">
+                            <a class="exit" style="font-size: 12px; cursor: pointer;" ng-click="changeOkato()">
+                                Изменить место обращения
+                            </a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Адрес по Kaldr -->
+            <div class="row" style="margin:10px 0;" ng-show="!task.defer.okato_erz">
+                <div class="form-group">
+                    <div class="col-md-5" style="text-align:right; margin: 5px 0;">
+                        <!--<label for="task_okato_name" class="right inline">Место обращения</label>-->
+                    </div>
+                    <div class="col-md-7 columns">
+                        <ui-select tagging tagging-label="('new')"
+                                   ng-model="task.defer.okato"
+                                   ng-model-options="{ debounce: 1000 }"
+                        <!--ng-change="getAnswer(task.theme_statement)"-->
+                        theme="bootstrap"
+                        title="Тема обращения">
+                        <ui-select-match placeholder="Место обращения...">{{$select.selected.text}}</ui-select-match>
+                        <ui-select-choices repeat="address in addresses track by $index"
+                                           refresh="refreshAddresses($select.search)"
+                                           refresh-delay="3">
+
+                            <div ng-bind-html="address.text | highlight: $select.search"></div>
+                        </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!--Контакты для уведомления-->
+        <div class="col-md-6">
+            <!--Контактный телефон-->
+            <div class="row" style="margin:10px 0;">
+                <div class="form-group">
+                    <div class="col-md-5" style="text-align:right; margin: 5px 0;">
+                        <label for="defer_phone" class="right inline">Контактный телефон</label>
+                    </div>
+                    <div class="col-md-7 columns">
+                        <input class="form-control"
+                               id="defer_phone"
+                               placeholder="Контактный телефон"
+                               ng-model="task.defer.phone"
+                               size="30"
+                               type="text"
+                               numbers-only
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <!--E-mail адрес-->
+            <div class="row" style="margin:10px 0;">
+                <div class="form-group">
+                    <div class="col-md-5" style="text-align:right; margin: 5px 0;">
+                        <label for="defer_email" class="right inline">Электронная почта</label>
+                    </div>
+                    <div class="col-md-7 columns">
+                        <input class="form-control"
+                               id="defer_email"
+                               placeholder="E-mail адрес"
+                               ng-model="task.defer.email"
+                               size="30"
+                               type="text" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Отсроченный ответ -->
+            <div class="row" style="margin:10px 0;">
+                <div class="form-group">
+                    <div class="col-md-5" style="text-align:right; margin: 5px 0;">
+                        <label for="task.defer.agent" class="right inline">Добавить представителя</label>
+                    </div>
+                    <div class="col-md-7 columns">
+                        <input
+                                id="task.defer.agent"
+                                ng-model="task.defer.agent"
+                                type="checkbox"
+                        />&nbsp;&nbsp;
+                    </div>
+                </div>
+            </div>
+
+            <!--Доп.: контактное лицо-->
+            <div class="row" style="margin:10px 0;" ng-show="task.defer.agent">
+                <div class="form-group">
+                    <div class="col-md-5" style="text-align:right; margin: 5px 0;">
+                        <label for="add_fio" class="right inline">ФИО представителя</label>
+                    </div>
+                    <div class="col-md-7 columns">
+                        <input class="form-control"
+                               id="add_fio"
+                               placeholder="ФИО представителя"
+                               ng-model="task.defer.add_fio"
+                               size="30"
+                               type="text"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <!--Доп.: телефон-->
+            <div class="row" style="margin:10px 0;" ng-show="task.defer.agent">
+                <div class="form-group">
+                    <div class="col-md-5" style="text-align:right; margin: 5px 0;">
+                        <label for="add_phone" class="right inline">Телефон представителя</label>
+                    </div>
+                    <div class="col-md-7 columns">
+                        <input class="form-control"
+                               id="add_phone"
+                               placeholder="Телефон представителя"
+                               ng-model="task.defer.add_phone"
+                               size="30"
+                               type="text"
+                               numbers-only
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <!--Комментарий-->
+            <div class="row" style="margin:10px 0;">
+                <div class="form-group">
+                    <div class="col-md-5" style="text-align:right; margin: 5px 0;">
+                        <label for="defer_desc" class="right inline">Комментарий</label>
+                    </div>
+
+                    <div class="col-md-7 columns">
+                        <textarea class="form-control"
+                                  id="defer_desc"
+                                  style="width: 100%; max-width: 100%;"
+                                  ng-model="task.defer.desc"
+                                  placeholder="Причина отсроченного ответа"
+                                  rows="3"
+                        ></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- история обращений -->
+            <div class="row" style="margin:10px 0;">
+                <div class="form-group">
+                    <div class="col-md-5" style="text-align:right; margin: 5px 0;">
+                    </div>
+                    <div class="col-md-7 columns">
+                        <a class="exit" style="font-size: 14px; cursor: pointer" ng-click="getHistory(task)">Показать историю обращений</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Сохранить-->
+        <div class="row">
+            <div class="col-md-12 text-right">
+                <legend></legend>
+                <input class="btn btn-tfoms-blue"
+                       type="submit"
+                       ng-click="deferred(task)"
+                       value="Сохранить"
+                >
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,407 @@
+<style>
+    .editable-wrap, .editable-textarea {width:100%;}
+</style>
+<div ng-controller="editTaskCtrl" ng-init="init()">
+    <ol class="breadcrumb">
+        <li><a href="#/">Главная</a></li>
+        <li class="active">Редактирование обращения № {{task.id}}</li>
+    </ol>
+    <div class="bs-callout bs-callout-info">
+        <p>
+        Для закрытия обращения заполните поле <code>«Принятые меры»</code> и нажмите «Закрыть обращение»<br>
+        Обращение будет отправленно администратору контакт-центра для проверки и утверждения результата.
+        </p>
+    </div>
+
+    <fieldset class="scheduler-border">
+        <legend class="scheduler-border">Регистрационная карта  <span class="label label-tfoms-orange"></span></legend>
+
+        <span  ng-show="loading" us-spinner="{right:50, top:50, radius:7, lines: 13, length: 4, width:2 }" style="position: absolute; top:50%; left:50%;"></span>
+        <div class="row" ng-class="{load_page: loading}"></div>
+
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mod-header">
+                            <ul class="ops"></ul>
+                            <h2 class="detail-title">Обращение</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row pd5">
+                    <div class="col-md-4">
+                        <strong class="name">Регистрационный номер:</strong>
+                    </div>
+                    <div class="col-md-8">
+                    <span class="value">
+                        {{task.id}}
+                    </span>
+                    </div>
+                </div>
+
+                <div class="row pd5">
+                    <div class="col-md-4">
+                        <strong class="name">Дата обращения:</strong>
+                    </div>
+                    <div class="col-md-8">
+                    <span class="value">
+                        {{task.statement_date | date:'dd-MM-yyyy'}}
+                    </span>
+                    </div>
+                </div>
+
+                <div class="row pd5">
+                    <div class="col-md-4">
+                        <strong class="name">Тип обращения:</strong>
+                    </div>
+                    <div class="col-md-8">
+                          <span class="value">
+                                {{ task.group.name }}
+                          </span>
+                    </div>
+                </div>
+
+                <div class="row pd5">
+                    <div class="col-md-4">
+                        <strong class="name">Тема обращения:</strong>
+                    </div>
+                    <div class="col-md-8">
+                         <span class="value">
+                                {{ task.theme.theme_statement }}
+                         </span>
+                    </div>
+                </div>
+
+                <div class="row pd5" ng-show="task.data.theme_statement_description">
+                    <div class="col-md-4">
+                        <strong class="name">Описание предложения:</strong>
+                    </div>
+                    <div class="col-md-8">
+                    <span class="value">
+                        {{task.data.theme_statement_description}}
+                    </span>
+                    </div>
+                </div>
+
+                <div class="row pd5">
+                    <div class="col-md-4">
+                        <strong class="name">Комментарий обращения:</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <span class="value">
+                            {{ task.theme_statement_description || '' }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row pd5">
+                    <div class="col-md-4">
+                        <strong class="name">Рассмотреть до:</strong>
+                    </div>
+                    <div class="col-md-8">
+                    <span class="value">
+                        {{task.expired | date:'dd-MM-yyyy'}}
+                    </span>
+                    </div>
+                </div>
+            </div>
+
+            <!--Инфо о обратившемся-->
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mod-header">
+                            <ul class="ops"></ul>
+                            <h2 class="detail-title">Информация об обратившемся</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row pd5">
+                    <div class="col-md-4">
+                        <strong class="name">Фамилия:</strong>
+                    </div>
+                    <div class="col-md-8">
+                    <span class="value">
+                         <span ng-class="{'em-text' : (!task.deffered.fam)}">
+                             {{task.deffered.fam || "не указанно"}}
+                         </span>
+                    </span>
+                    </div>
+                </div>
+
+                <div class="row pd5">
+                    <div class="col-md-4">
+                        <strong class="name">Имя:</strong>
+                    </div>
+                    <div class="col-md-8">
+                    <span class="value">
+                         <span ng-class="{'em-text' : (!task.deffered.im)}">
+                             {{task.deffered.im || "не указанно"}}
+                         </span>
+                    </span>
+                    </div>
+                </div>
+
+                <div class="row pd5">
+                    <div class="col-md-4">
+                        <strong class="name">Отчество:</strong>
+                    </div>
+                    <div class="col-md-8">
+                    <span class="value">
+                         <span ng-class="{'em-text' : (!task.deffered.ot)}">
+                             {{task.deffered.ot || "не указанно"}}
+                         </span>
+                    </span>
+                    </div>
+                </div>
+
+                <div class="row pd5">
+                    <div class="col-md-4">
+                        <strong class="name">Дата рождения:</strong>
+                    </div>
+                    <div class="col-md-8">
+                    <span class="value">
+                         <span ng-class="{'em-text' : (!task.deffered.dt)}">
+                             {{task.deffered.dt || "не указанно"}}
+                         </span>
+                    </span>
+                    </div>
+                </div>
+
+                <div class="row pd5">
+                    <div class="col-md-4">
+                        <strong class="name">Контактный телефон:</strong>
+                    </div>
+                    <div class="col-md-8">
+                    <span class="value">
+                         <span ng-class="{'em-text' : (!task.deffered.phone)}">
+                             {{task.deffered.phone || "не указанно"}}
+                         </span>
+                    </span>
+                    </div>
+                </div>
+
+                <div class="row pd5">
+                    <div class="col-md-4">
+                        <strong class="name">E-mail:</strong>
+                    </div>
+                    <div class="col-md-8">
+                    <span class="value">
+                         <span ng-class="{'em-text' : (!task.deffered.email)}">
+                             {{task.deffered.email || "не указанно"}}
+                         </span>
+                    </span>
+                    </div>
+                </div>
+
+                <div class="row pd5">
+                    <div class="col-md-4">
+                        <strong class="name">Комментрарий:</strong>
+                    </div>
+                    <div class="col-md-8">
+                    <span class="value">
+                         <span ng-class="{'em-text' : (!task.deffered.description)}">
+                             {{task.deffered.description || "не указанно"}}
+                         </span>
+                    </span>
+                    </div>
+                </div>
+
+                <!--если указан представитель-->
+                <span ng-show="task.deffered.add_phone">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mod-header">
+                            <ul class="ops"></ul>
+                            <h2 class="detail-title">Представитель обратившегося</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row pd5">
+                    <div class="col-md-4">
+                        <strong class="name">ФИО:</strong>
+                    </div>
+                    <div class="col-md-8">
+                    <span class="value">
+                         <span ng-class="{'em-text' : (!task.deffered.add_fio)}">
+                             {{task.deffered.add_fio || "не указанно"}}
+                         </span>
+                    </span>
+                    </div>
+                </div>
+
+                <div class="row pd5">
+                    <div class="col-md-4">
+                        <strong class="name">Телефон:</strong>
+                    </div>
+                    <div class="col-md-8">
+                    <span class="value">
+                         <span ng-class="{'em-text' : (!task.deffered.add_phone)}">
+                             {{task.deffered.add_phone || "не указанно"}}
+                         </span>
+                    </span>
+                    </div>
+                </div>
+                </span>
+            </div>
+
+            <!-- Связанные обращения  -->
+            <div class="col-md-12" ng-show="task.related.length > 0">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mod-header">
+                            <ul class="ops"></ul>
+                            <h2 class="detail-title">История обращений</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <td>Номер</td>
+                            <td>Тип обращения</td>
+                            <td>Тема</td>
+                            <td>Фио обратившегося</td>
+                            <td>Дата обращения</td>
+                            <td>Результат</td>
+                            <td>Просмотр</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in task.related">
+                            <td>{{item.related_id}}</td>
+                            <td>{{item.stmt_rel.group.name}}</td>
+                            <td>{{item.stmt_rel.theme.theme_statement}}</td>
+                            <td>{{item.stmt_rel.deffered.fam}}&nbsp;{{item.stmt_rel.deffered.im}}&nbsp;{{item.stmt_rel.deffered.ot}}</td>
+                            <td>{{item.stmt_rel.statement_date}}</td>
+                            <td>{{item.stmt_rel.stmt_status.name}}</td>
+                            <td>
+                                <button type="button" class="exit"
+                                        data-animation="am-fade-and-scale"
+                                        data-placement="center"
+                                        data-template-url="/partials/first/tpl/modal.html"
+                                        bs-modal="modal"
+                                        ng-click="showModalParams(item)"
+                                >
+                                    <small>Открыть</small>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <!-- Отсроченный ответ -->
+            <div class="row" ng-show="task.status == 5">
+                <div class="col-sm-12"
+                     ng-include src="'/partials/templates/view/deffered_call.html'">
+                </div>
+            </div>
+
+            <!-- Принятые меры -->
+            <div class="col-sm-12" ng-show="task.status != 5">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mod-header">
+                            <ul class="ops"></ul>
+                            <h2 class="detail-title">Принятые меры</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Завершение обращения -->
+                <div class="col-md-5" style="padding: 0">
+                    <div class="form-group" ng-class="{ 'has-error': saveNewTaskData.task_result.$invalid }">
+                        <label for="task_result">Результат обращения:</label>
+                        <select id="task_result"
+                            class="form-control"
+                            name="task_result"
+                            ng-model="task.data.accept"
+                            ng-options="state.id as state.name for state in state_result"
+                            ng-required="true">
+                            <option value=''>-  Результат обращения  -</option>
+                        </select>
+
+                        <p ng-show="saveNewTaskData.task_result.$invalid"
+                           class="help-block">
+                            Поле «Принятые меры» обязательно к заполнению
+                        </p>
+                    </div>
+
+                    <div class="form-group" ng-if="task.data.accept == 12">
+                        <label for="expired_1">Дата завершения</label>
+                        <input type="text"
+                               id="expired_1"
+                               class="form-control"
+                               ng-model="task.data.expired_1"
+                               data-date-format="dd-MM-yyyy"
+                               placeholder="ДД-ММ-ГГГГ"
+                               name="date"
+                               bs-datepicker>
+                    </div>
+
+                    <div class="form-group" ng-if="task.data.accept == 8">
+                        <label for="user_o">Введите вн. номер специалиста</label>
+                        <ui-select tagging tagging-label="('new')"
+                                   id="user_o"
+                                   ng-model="task.transfer"
+                                   theme="bootstrap"
+                                   title="Операторы" >
+                            <ui-select-match placeholder="Выберите оператора...">{{$select.selected.sip_dispaly_name}}</ui-select-match>
+                            <ui-select-choices group-by="gp" repeat="item in listUsers | filter: $select.search"
+                                               refresh="refreshUsers(task)"
+                                               refresh-delay="0">
+                                <div ng-bind-html="userHtml(item) | highlight: $select.search"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+
+
+                </div>
+
+                <!-- Комментарий к завершению -->
+                <div class="col-md-7">
+                    <div class="col-sm-12" style="padding: 0">
+                        <div class="form-group">
+                            <label for="taken_measures">Описание:</label>
+                        <textarea id="taken_measures"
+                                  class="form-control"
+                                  style="width: 100%;"
+                                  rows="4"
+                                  placeholder="Краткое описание принятых мер..."
+                                  ng-model="task.data.accept_msg">
+                        </textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-12 text-right" ng-if="task.data.accept == 8">
+                        <!-- <button ng-click="save()" >Save</button> -->
+                        <input class="btn btn-warning"
+                               style="margin: 10px 0;"
+                               type="submit"
+                               ng-click="transfer(task)"
+                               ng-disabled="saveNewTaskData.$invalid"
+                               value="Перевести обращение">
+                    </div>
+
+                    <div class="col-sm-12 text-right" ng-if="task.data.accept != 8">
+                        <!-- <button ng-click="save()" >Save</button> -->
+                        <input class="btn btn-tfoms-green"
+                               style="margin: 10px 0;"
+                               type="submit"
+                               ng-click="update(task)"
+                               ng-disabled="saveNewTaskData.$invalid"
+                               value="Закрыть обращение">
+                    </div>
+                </div>
+            </div>
+
+    </fieldset>
+</div>

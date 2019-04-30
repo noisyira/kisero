@@ -1,0 +1,40 @@
+<div class="row" ng-controller="reportCtrl as report">
+    <legend>Формирование отчёта</legend>
+    <div class="col-md-12">
+
+    <span us-spinner spinner-key="spinner"></span>
+
+    <div class="row">
+        <div class="col-md-5 form-group">
+            <label class="col-xs-4"> Выберите период:</label>
+
+            <div class="col-xs-8">
+                <input date-range-picker
+                       id="daterange"
+                       name="daterange"
+                       class="form-control date-picker"
+                       type="text"
+                       ng-model="report.datePicker"
+                       options="report.opts"
+                       required
+                />
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <button class="btn btn-default" ng-click="report.sendReport(report.datePicker)">Сформировать отчет</button>
+        </div>
+    </div>
+
+    <div class="row" ng-show="report.dataReport">
+        <hr>
+        <div class="col-md-12">
+            <h4>Отчёт</h4>
+            <p>
+                1. ОБРАЩЕНИЯ ЗАСТРАХОВАННЫХ ЛИЦ - Таблица 1.1 — <a style="cursor: pointer;" ng-click="report.saveReport(report.dataReport)">Сохранить <i class="fa fa-download" aria-hidden="true"></i></a>
+            </p>
+        </div>
+    </div>
+
+    </div>
+</div>

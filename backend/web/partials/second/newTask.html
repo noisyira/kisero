@@ -1,0 +1,255 @@
+<style>
+    .myTabs>ul>li {width: 25%; text-align: center;}
+    .myTabs>ul>li a {cursor: pointer}
+
+    .animate-show.ng-hide-add.ng-hide-add-active,
+    .animate-show.ng-hide-remove.ng-hide-remove-active {
+        -webkit-transition: .5s linear all;
+        transition: .5s linear all;
+        overflow: hidden;
+    }
+
+    .animate-show.ng-hide {
+        line-height: 0;
+        opacity: 0;
+        padding: 0 10px;
+    }
+</style>
+<ol class="breadcrumb">
+    <li><a href="#/">Главная</a></li>
+    <li class="active">Новое обращение</li>
+</ol>
+
+<!-- Поиск застрахованных по ЕРЗ -->
+<div ng-controller="newTaskDataCtrl">
+    <div  ng-controller="findERZCtrl">
+        <label class="task-erz" for="erz">Поиск по реестру застрахованных:</label>
+        <input type="checkbox" id="erz" name="erz" ng-model="findERZ" style="display: none;" />
+
+        <div class="form-group check-element animate-show" ng-show="findERZ">
+
+            <fieldset class="scheduler-border">
+                <legend class="scheduler-border">Поиск застрахованного</legend>
+                <form name="saveFind_ERZ">
+
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <label for="erz_f_name">Фамилия</label>
+                            <input class="form-control"
+                                   id="erz_f_name"
+                                   placeholder="Фамилия"
+                                   ng-model="erz.sName"
+                                   size="30" type="text" />
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="erz_name">Имя</label>
+                            <input class="form-control"
+                                   id="erz_name"
+                                   placeholder="Имя"
+                                   ng-model="erz.Name"
+                                   size="30" type="text" />
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="erz_l_name">Отчество</label>
+                            <input class="form-control"
+                                   id="erz_l_name"
+                                   placeholder="Отчество"
+                                   ng-model="erz.pName"
+                                   size="30" type="text" />
+                        </div>
+                        <div class="col-sm-3">
+                            <!--<label for="erz_date">Дата рождения</label>-->
+                            <div class="form-group" ng-class="{'has-error': datepickerForm.date.$invalid}">
+                                <label class="control-label" for="erz_date">Дата рождения</label>
+                                <input type="text"
+                                       id="erz_date"
+                                       class="form-control"
+                                       ng-model="erz.dateMan"
+                                       data-date-format="ddMMyyyy"
+                                       ui-mask='99-99-9999'
+                                       placeholder="ДД-ММ-ГГГГ"
+                                       name="date"
+                                       bs-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12 text-right">
+                            <!--<input class="btn btn-default" style="margin: 10px 0;"  type="button" ng-click="findERZ=!findERZ" value="Скрыть" >-->
+                            <!--<input class="btn btn-default" style="margin: 10px 0;"  type="button" ng-click="clearERZ()" value="Очистить" >-->
+                            <a class="btn btn-default" ng-click="findERZ=!findERZ"><i class="fa fa-minus-square-o"></i>&nbsp;Скрыть</a>
+                            <a class="btn btn-default" ng-click="clearERZ()"><i class="fa fa-pencil-square-o"></i>&nbsp;Очистить</a>
+                            <a class="btn btn-default" ng-click="submitForm()"><i class='fa fa-search'></i>&nbsp;Поиск</a>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <hr style="margin-bottom: 0;">
+                        <span  ng-show="loading" us-spinner="{right:0, top:10, radius:7, lines: 13, length: 4, width:2, }"></span>
+                        <p ng-show="!erzData">
+                            Для поиска застрахованного лица введите его данные в форму поиска.<br>
+                            Все поля заполнять необязательно.
+                        </p>
+                        <!-- Список застрахованных -->
+                        <table ng-show="erzData" class="table table-hover table-condensed table-bordered">
+                            <thead>
+                            <tr>
+                                <td>ЕНП</td>
+                                <td>Фамилия</td>
+                                <td>Имя</td>
+                                <td>Отчество</td>
+                                <td>Дата рождения</td>
+                                <td>Страховая</td>
+                                <td>Действие</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="row in erzData">
+                                <td>{{row.ENP}}</td>
+                                <td>{{row.sName}}</td>
+                                <td>{{row.Name}}</td>
+                                <td>{{row.pName}}</td>
+                                <td> {{formatDate(row.dateMan) | date:'dd-MM-yyyy'}}</td>
+                                <td ng-switch="row.reestr.orgId">
+                                    <span ng-switch-when="1">ООО "СК "ИНГОССТРАХ-М" </span>
+                                    <span ng-switch-when="4">ООО ВТБ МС</span>
+                                    <span ng-switch-default></span>
+
+                                </td>
+                                <td>
+                                    <a class="exit" style="font-size: 14px; cursor: pointer;" ng-click="setERZ(row)">Применить</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    <!-- Открытие РКК  -->
+    <div ng-init="GetSip()">
+
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border">Регистрационная карта</legend>
+
+            <!--Загрузка данных / ошибка соединения с БД-->
+            <div class="alert alert-default"
+                 ng-show="loading"
+                 style="position: relative; text-align: center; background-color: lightgrey; font-size: 18px; margin-bottom: 0px"
+            >
+                <span us-spinner="{right:0, top:10, radius:7, lines: 13, length: 4, width:2, }"></br>Загрузка</span></br>
+                <div class="" ng-show="sipError" style="padding-left: 20px;">
+                    <i class="fa fa-exclamation-triangle"></i>  {{sipError}}
+                </div>
+            </div>
+
+            <!-- Создание новой РКК -->
+            <form name="saveNewTaskData" ng-submit="submit()" ng-show="!loading">
+                <!--Общие данные-->
+                <div class="row">
+                    <!--<div class="form-group">-->
+                    <!--<div class="col-sm-3">-->
+                    <!--<label for="task_id">№ обращения</label>-->
+                    <input class="form-control" id="task_id" ng-model="task.channel_id" size="30" type="hidden"/>
+                    <!--</div>-->
+
+                    <!--<div class="col-sm-3">-->
+                    <!--<label for="task_current_date">Дата</label>-->
+                    <!--<input class="form-control"-->
+                    <!--id="task_current_date"-->
+                    <!--value="{{task.currentDate | date:'dd-MM-yyyy H:m:s'}}"-->
+                    <!--size="30"-->
+                    <!--type="text" disabled />-->
+                    <!--</div>-->
+
+                    <!--<div class="col-sm-3">-->
+                    <!--<label for="task_statement">Вид обращения</label>-->
+                    <!--<input class="form-control" id="task_statement" value="web - сайт" ng-model="task.statement" size="30" type="text" disabled />-->
+                    <!--</div>-->
+
+                    <!--<div class="col-sm-3">-->
+                    <!--<label for="task_stage_statement">Этап обращения</label>-->
+                    <!--<select id="task_stage_statement"-->
+                    <!--class="form-control"-->
+                    <!--ng-model="task.stage_statement"-->
+                    <!--ng-selected="0"-->
+                    <!--ng-options="state.id as state.name for state in states"-->
+                    <!--required>-->
+                    <!--</select>-->
+                    <!--</div>-->
+                    <!--</div>-->
+
+                    <div class="form-group col-md-12" style="padding: 0; margin: 10px 0;">
+                        <div class="col-sm-4">
+                            <label for="task_tip_statement">Тип обращения</label>
+                            <select class="form-control"
+                                    id="task_tip_statement"
+                                    ng-change="refreshStmt(task.tip_statement); clear();"
+                                    ng-model="task.tip_statement">
+                                <option value="1" selected="selected">Жалоба</option>
+                                <option value="2">Консультация</option>
+                                <option value="4">Предложение</option>
+                            </select>
+                        </div>
+
+                        <!-- Тип обращения == Консультация -->
+                        <div class="form-group">
+                            <div class="col-sm-8">
+                                <label for="task_theme_statement_desc">Тема обращения:</label>
+                                <ui-select tagging tagging-label="('new')"
+                                           ng-model="task.theme_statement"
+                                           ng-disabled="!task.tip_statement"
+                                           ng-change="getStmt(task.theme_statement)"
+                                           theme="bootstrap"
+                                           title="Тема обращения">
+                                    <ui-select-match placeholder="Тема обращения...">{{$select.selected.theme_statement}}</ui-select-match>
+                                    <ui-select-choices group-by="gp" repeat="item in lists | filter: $select.search"
+                                                       refresh="refreshStmt(task.tip_statement)"
+                                                       refresh-delay="0">
+
+                                        <div ng-bind-html="item.theme_statement | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Тип обращения == Предложение -->
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <label for="task_theme_statement_desc">Комментарий:</label>
+                        <textarea id="task_theme_statement_desc"
+                                  class="form-control"
+                                  style="width: 100%; max-width: 100%;"
+                                  rows="2"
+                                  placeholder="Комментарий..."
+                                  ng-model="task.theme_statement_description">
+                        </textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <legend style="margin-top: 10px;">Действие</legend>
+                <!--Tabs -->
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <!-- bsActivePane is optional -->
+                        <div bs-active-pane="tabs.activeTab" class="myTabs" bs-tabs>
+                            <div ng-repeat="tab in tabs"
+                                 data-title="{{ tab.title }}"
+                                 bs-pane>
+                                <div ng-include="tab.template"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </div>
+</div>

@@ -1,0 +1,357 @@
+2016-07-11 08:26:33 [192.168.1.52][-][5039d98so289ai09p5hj25i3g6][error][yii\base\InvalidConfigException] exception 'yii\base\InvalidConfigException' with message 'Either GD PHP extension with FreeType support or ImageMagick PHP extension with PNG support is required.' in /var/www/html/test/vendor/yiisoft/yii2/captcha/Captcha.php:179
+Stack trace:
+#0 /var/www/html/test/vendor/yiisoft/yii2/captcha/Captcha.php(94): yii\captcha\Captcha::checkRequirements()
+#1 /var/www/html/test/vendor/yiisoft/yii2/base/Object.php(107): yii\captcha\Captcha->init()
+#2 [internal function]: yii\base\Object->__construct(Array)
+#3 /var/www/html/test/vendor/yiisoft/yii2/di/Container.php(374): ReflectionClass->newInstanceArgs(Array)
+#4 /var/www/html/test/vendor/yiisoft/yii2/di/Container.php(153): yii\di\Container->build('yii\\captcha\\Cap...', Array, Array)
+#5 /var/www/html/test/vendor/yiisoft/yii2/BaseYii.php(344): yii\di\Container->get('yii\\captcha\\Cap...', Array, Array)
+#6 /var/www/html/test/vendor/yiisoft/yii2/base/Widget.php(97): yii\BaseYii::createObject(Array)
+#7 /var/www/html/test/vendor/yiisoft/yii2/widgets/ActiveField.php(673): yii\base\Widget::widget(Array)
+#8 /var/www/html/test/frontend/views/site/contact.php(35): yii\widgets\ActiveField->widget('yii\\captcha\\Cap...', Array)
+#9 /var/www/html/test/vendor/yiisoft/yii2/base/View.php(325): require('/var/www/html/t...')
+#10 /var/www/html/test/vendor/yiisoft/yii2/base/View.php(247): yii\base\View->renderPhpFile('/var/www/html/t...', Array)
+#11 /var/www/html/test/vendor/yiisoft/yii2/base/View.php(149): yii\base\View->renderFile('/var/www/html/t...', Array, Object(frontend\controllers\SiteController))
+#12 /var/www/html/test/vendor/yiisoft/yii2/base/Controller.php(378): yii\base\View->render('contact', Array, Object(frontend\controllers\SiteController))
+#13 /var/www/html/test/frontend/controllers/SiteController.php(130): yii\base\Controller->render('contact', Array)
+#14 [internal function]: frontend\controllers\SiteController->actionContact()
+#15 /var/www/html/test/vendor/yiisoft/yii2/base/InlineAction.php(55): call_user_func_array(Array, Array)
+#16 /var/www/html/test/vendor/yiisoft/yii2/base/Controller.php(154): yii\base\InlineAction->runWithParams(Array)
+#17 /var/www/html/test/vendor/yiisoft/yii2/base/Module.php(454): yii\base\Controller->runAction('contact', Array)
+#18 /var/www/html/test/vendor/yiisoft/yii2/web/Application.php(84): yii\base\Module->runAction('site/contact', Array)
+#19 /var/www/html/test/vendor/yiisoft/yii2/base/Application.php(375): yii\web\Application->handleRequest(Object(yii\web\Request))
+#20 /var/www/html/test/frontend/web/index.php(18): yii\base\Application->run()
+#21 {main}
+2016-07-11 08:26:33 [192.168.1.52][-][5039d98so289ai09p5hj25i3g6][info][application] $_GET = [
+    'r' => 'site/contact'
+]
+
+$_COOKIE = [
+    'PHPSESSID' => '5039d98so289ai09p5hj25i3g6'
+    '_csrf' => 'cc2da6289cb09af2e8124e26b3aa3961878de15fb4a2067877e48fc2dee4a5eda:2:{i:0;s:5:\"_csrf\";i:1;s:32:\"AQPADxYmq9vRU8cPVKM-WckgY0bHrqfT\";}'
+]
+
+$_SESSION = [
+    '__flash' => []
+    '__returnUrl' => '/soap'
+]
+
+$_SERVER = [
+    'UNIQUE_ID' => 'V4MuCbPTMjKXPFYbEzLjygAAAAA'
+    'HTTP_HOST' => '192.168.1.47:8081'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_REFERER' => 'http://192.168.1.47:8081/soap'
+    'HTTP_COOKIE' => 'PHPSESSID=5039d98so289ai09p5hj25i3g6; _csrf=cc2da6289cb09af2e8124e26b3aa3961878de15fb4a2067877e48fc2dee4a5eda%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%22AQPADxYmq9vRU8cPVKM-WckgY0bHrqfT%22%3B%7D'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'PATH' => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.6 (CentOS) PHP/5.6.22'
+    'SERVER_NAME' => '192.168.1.47'
+    'SERVER_ADDR' => '192.168.1.47'
+    'SERVER_PORT' => '8081'
+    'REMOTE_ADDR' => '192.168.1.52'
+    'DOCUMENT_ROOT' => '/var/www/html/test'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/var/www/html/test'
+    'SERVER_ADMIN' => 'root@localhost'
+    'SCRIPT_FILENAME' => '/var/www/html/test/frontend/web/index.php'
+    'REMOTE_PORT' => '5155'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'r=site%2Fcontact'
+    'REQUEST_URI' => '/frontend/web/index.php?r=site%2Fcontact'
+    'SCRIPT_NAME' => '/frontend/web/index.php'
+    'PHP_SELF' => '/frontend/web/index.php'
+    'REQUEST_TIME_FLOAT' => 1468214793.736
+    'REQUEST_TIME' => 1468214793
+]
+2016-07-11 08:26:40 [192.168.1.52][-][5039d98so289ai09p5hj25i3g6][error][yii\base\InvalidConfigException] exception 'yii\base\InvalidConfigException' with message 'Either GD PHP extension with FreeType support or ImageMagick PHP extension with PNG support is required.' in /var/www/html/test/vendor/yiisoft/yii2/captcha/Captcha.php:179
+Stack trace:
+#0 /var/www/html/test/vendor/yiisoft/yii2/captcha/Captcha.php(94): yii\captcha\Captcha::checkRequirements()
+#1 /var/www/html/test/vendor/yiisoft/yii2/base/Object.php(107): yii\captcha\Captcha->init()
+#2 [internal function]: yii\base\Object->__construct(Array)
+#3 /var/www/html/test/vendor/yiisoft/yii2/di/Container.php(374): ReflectionClass->newInstanceArgs(Array)
+#4 /var/www/html/test/vendor/yiisoft/yii2/di/Container.php(153): yii\di\Container->build('yii\\captcha\\Cap...', Array, Array)
+#5 /var/www/html/test/vendor/yiisoft/yii2/BaseYii.php(344): yii\di\Container->get('yii\\captcha\\Cap...', Array, Array)
+#6 /var/www/html/test/vendor/yiisoft/yii2/base/Widget.php(97): yii\BaseYii::createObject(Array)
+#7 /var/www/html/test/vendor/yiisoft/yii2/widgets/ActiveField.php(673): yii\base\Widget::widget(Array)
+#8 /var/www/html/test/frontend/views/site/contact.php(35): yii\widgets\ActiveField->widget('yii\\captcha\\Cap...', Array)
+#9 /var/www/html/test/vendor/yiisoft/yii2/base/View.php(325): require('/var/www/html/t...')
+#10 /var/www/html/test/vendor/yiisoft/yii2/base/View.php(247): yii\base\View->renderPhpFile('/var/www/html/t...', Array)
+#11 /var/www/html/test/vendor/yiisoft/yii2/base/View.php(149): yii\base\View->renderFile('/var/www/html/t...', Array, Object(frontend\controllers\SiteController))
+#12 /var/www/html/test/vendor/yiisoft/yii2/base/Controller.php(378): yii\base\View->render('contact', Array, Object(frontend\controllers\SiteController))
+#13 /var/www/html/test/frontend/controllers/SiteController.php(130): yii\base\Controller->render('contact', Array)
+#14 [internal function]: frontend\controllers\SiteController->actionContact()
+#15 /var/www/html/test/vendor/yiisoft/yii2/base/InlineAction.php(55): call_user_func_array(Array, Array)
+#16 /var/www/html/test/vendor/yiisoft/yii2/base/Controller.php(154): yii\base\InlineAction->runWithParams(Array)
+#17 /var/www/html/test/vendor/yiisoft/yii2/base/Module.php(454): yii\base\Controller->runAction('contact', Array)
+#18 /var/www/html/test/vendor/yiisoft/yii2/web/Application.php(84): yii\base\Module->runAction('site/contact', Array)
+#19 /var/www/html/test/vendor/yiisoft/yii2/base/Application.php(375): yii\web\Application->handleRequest(Object(yii\web\Request))
+#20 /var/www/html/test/frontend/web/index.php(18): yii\base\Application->run()
+#21 {main}
+2016-07-11 08:26:40 [192.168.1.52][-][5039d98so289ai09p5hj25i3g6][info][application] $_GET = [
+    'r' => 'site/contact'
+]
+
+$_COOKIE = [
+    'PHPSESSID' => '5039d98so289ai09p5hj25i3g6'
+    '_csrf' => 'cc2da6289cb09af2e8124e26b3aa3961878de15fb4a2067877e48fc2dee4a5eda:2:{i:0;s:5:\"_csrf\";i:1;s:32:\"AQPADxYmq9vRU8cPVKM-WckgY0bHrqfT\";}'
+]
+
+$_SESSION = [
+    '__flash' => []
+    '__returnUrl' => '/soap'
+]
+
+$_SERVER = [
+    'UNIQUE_ID' => 'V4MuEMK6r6-HmxoDpcKPTQAAAAk'
+    'HTTP_HOST' => '192.168.1.47:8081'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_REFERER' => 'http://192.168.1.47:8081/frontend/web/index.php?r=site%2Fsignup'
+    'HTTP_COOKIE' => 'PHPSESSID=5039d98so289ai09p5hj25i3g6; _csrf=cc2da6289cb09af2e8124e26b3aa3961878de15fb4a2067877e48fc2dee4a5eda%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%22AQPADxYmq9vRU8cPVKM-WckgY0bHrqfT%22%3B%7D'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'PATH' => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.6 (CentOS) PHP/5.6.22'
+    'SERVER_NAME' => '192.168.1.47'
+    'SERVER_ADDR' => '192.168.1.47'
+    'SERVER_PORT' => '8081'
+    'REMOTE_ADDR' => '192.168.1.52'
+    'DOCUMENT_ROOT' => '/var/www/html/test'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/var/www/html/test'
+    'SERVER_ADMIN' => 'root@localhost'
+    'SCRIPT_FILENAME' => '/var/www/html/test/frontend/web/index.php'
+    'REMOTE_PORT' => '5153'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'r=site%2Fcontact'
+    'REQUEST_URI' => '/frontend/web/index.php?r=site%2Fcontact'
+    'SCRIPT_NAME' => '/frontend/web/index.php'
+    'PHP_SELF' => '/frontend/web/index.php'
+    'REQUEST_TIME_FLOAT' => 1468214800.922
+    'REQUEST_TIME' => 1468214800
+]
+2016-07-11 08:32:21 [192.168.1.52][-][5039d98so289ai09p5hj25i3g6][error][yii\base\InvalidConfigException] exception 'yii\base\InvalidConfigException' with message 'Either GD PHP extension with FreeType support or ImageMagick PHP extension with PNG support is required.' in /var/www/html/test/vendor/yiisoft/yii2/captcha/Captcha.php:179
+Stack trace:
+#0 /var/www/html/test/vendor/yiisoft/yii2/captcha/Captcha.php(94): yii\captcha\Captcha::checkRequirements()
+#1 /var/www/html/test/vendor/yiisoft/yii2/base/Object.php(107): yii\captcha\Captcha->init()
+#2 [internal function]: yii\base\Object->__construct(Array)
+#3 /var/www/html/test/vendor/yiisoft/yii2/di/Container.php(374): ReflectionClass->newInstanceArgs(Array)
+#4 /var/www/html/test/vendor/yiisoft/yii2/di/Container.php(153): yii\di\Container->build('yii\\captcha\\Cap...', Array, Array)
+#5 /var/www/html/test/vendor/yiisoft/yii2/BaseYii.php(344): yii\di\Container->get('yii\\captcha\\Cap...', Array, Array)
+#6 /var/www/html/test/vendor/yiisoft/yii2/base/Widget.php(97): yii\BaseYii::createObject(Array)
+#7 /var/www/html/test/vendor/yiisoft/yii2/widgets/ActiveField.php(673): yii\base\Widget::widget(Array)
+#8 /var/www/html/test/frontend/views/site/contact.php(35): yii\widgets\ActiveField->widget('yii\\captcha\\Cap...', Array)
+#9 /var/www/html/test/vendor/yiisoft/yii2/base/View.php(325): require('/var/www/html/t...')
+#10 /var/www/html/test/vendor/yiisoft/yii2/base/View.php(247): yii\base\View->renderPhpFile('/var/www/html/t...', Array)
+#11 /var/www/html/test/vendor/yiisoft/yii2/base/View.php(149): yii\base\View->renderFile('/var/www/html/t...', Array, Object(frontend\controllers\SiteController))
+#12 /var/www/html/test/vendor/yiisoft/yii2/base/Controller.php(378): yii\base\View->render('contact', Array, Object(frontend\controllers\SiteController))
+#13 /var/www/html/test/frontend/controllers/SiteController.php(130): yii\base\Controller->render('contact', Array)
+#14 [internal function]: frontend\controllers\SiteController->actionContact()
+#15 /var/www/html/test/vendor/yiisoft/yii2/base/InlineAction.php(55): call_user_func_array(Array, Array)
+#16 /var/www/html/test/vendor/yiisoft/yii2/base/Controller.php(154): yii\base\InlineAction->runWithParams(Array)
+#17 /var/www/html/test/vendor/yiisoft/yii2/base/Module.php(454): yii\base\Controller->runAction('contact', Array)
+#18 /var/www/html/test/vendor/yiisoft/yii2/web/Application.php(84): yii\base\Module->runAction('site/contact', Array)
+#19 /var/www/html/test/vendor/yiisoft/yii2/base/Application.php(375): yii\web\Application->handleRequest(Object(yii\web\Request))
+#20 /var/www/html/test/frontend/web/index.php(18): yii\base\Application->run()
+#21 {main}
+2016-07-11 08:32:21 [192.168.1.52][-][5039d98so289ai09p5hj25i3g6][info][application] $_COOKIE = [
+    'PHPSESSID' => '5039d98so289ai09p5hj25i3g6'
+    '_csrf' => '05e2c8fd3b43a786ca49a9385d03f5d1b82791b2e5f45e24292fae090fe3b377a:2:{i:0;s:5:\"_csrf\";i:1;s:32:\"u0PdcYssHVOxUldx4Xa7_IpcoLjXNpR6\";}'
+]
+
+$_SESSION = [
+    '__flash' => []
+    '__returnUrl' => '/soap/index'
+]
+
+$_SERVER = [
+    'REDIRECT_UNIQUE_ID' => 'V4MvZSZ@enIhNYGcLmh@nQAAAAc'
+    'REDIRECT_STATUS' => '200'
+    'UNIQUE_ID' => 'V4MvZSZ@enIhNYGcLmh@nQAAAAc'
+    'HTTP_HOST' => '192.168.1.47:8081'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_REFERER' => 'http://192.168.1.47:8081/frontend/web/site/about'
+    'HTTP_COOKIE' => 'PHPSESSID=5039d98so289ai09p5hj25i3g6; _csrf=05e2c8fd3b43a786ca49a9385d03f5d1b82791b2e5f45e24292fae090fe3b377a%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%22u0PdcYssHVOxUldx4Xa7_IpcoLjXNpR6%22%3B%7D'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'PATH' => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.6 (CentOS) PHP/5.6.22'
+    'SERVER_NAME' => '192.168.1.47'
+    'SERVER_ADDR' => '192.168.1.47'
+    'SERVER_PORT' => '8081'
+    'REMOTE_ADDR' => '192.168.1.52'
+    'DOCUMENT_ROOT' => '/var/www/html/test'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/var/www/html/test'
+    'SERVER_ADMIN' => 'root@localhost'
+    'SCRIPT_FILENAME' => '/var/www/html/test/frontend/web/index.php'
+    'REMOTE_PORT' => '5274'
+    'REDIRECT_URL' => '/frontend/web/site/contact'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => ''
+    'REQUEST_URI' => '/frontend/web/site/contact'
+    'SCRIPT_NAME' => '/frontend/web/index.php'
+    'PHP_SELF' => '/frontend/web/index.php'
+    'REQUEST_TIME_FLOAT' => 1468215141.181
+    'REQUEST_TIME' => 1468215141
+]
+2016-07-11 08:43:18 [192.168.1.52][-][5039d98so289ai09p5hj25i3g6][error][yii\base\InvalidConfigException] exception 'yii\base\InvalidConfigException' with message 'Either GD PHP extension with FreeType support or ImageMagick PHP extension with PNG support is required.' in /var/www/html/test/vendor/yiisoft/yii2/captcha/Captcha.php:179
+Stack trace:
+#0 /var/www/html/test/vendor/yiisoft/yii2/captcha/Captcha.php(94): yii\captcha\Captcha::checkRequirements()
+#1 /var/www/html/test/vendor/yiisoft/yii2/base/Object.php(107): yii\captcha\Captcha->init()
+#2 [internal function]: yii\base\Object->__construct(Array)
+#3 /var/www/html/test/vendor/yiisoft/yii2/di/Container.php(374): ReflectionClass->newInstanceArgs(Array)
+#4 /var/www/html/test/vendor/yiisoft/yii2/di/Container.php(153): yii\di\Container->build('yii\\captcha\\Cap...', Array, Array)
+#5 /var/www/html/test/vendor/yiisoft/yii2/BaseYii.php(344): yii\di\Container->get('yii\\captcha\\Cap...', Array, Array)
+#6 /var/www/html/test/vendor/yiisoft/yii2/base/Widget.php(97): yii\BaseYii::createObject(Array)
+#7 /var/www/html/test/vendor/yiisoft/yii2/widgets/ActiveField.php(673): yii\base\Widget::widget(Array)
+#8 /var/www/html/test/frontend/views/site/contact.php(35): yii\widgets\ActiveField->widget('yii\\captcha\\Cap...', Array)
+#9 /var/www/html/test/vendor/yiisoft/yii2/base/View.php(325): require('/var/www/html/t...')
+#10 /var/www/html/test/vendor/yiisoft/yii2/base/View.php(247): yii\base\View->renderPhpFile('/var/www/html/t...', Array)
+#11 /var/www/html/test/vendor/yiisoft/yii2/base/View.php(149): yii\base\View->renderFile('/var/www/html/t...', Array, Object(frontend\controllers\SiteController))
+#12 /var/www/html/test/vendor/yiisoft/yii2/base/Controller.php(378): yii\base\View->render('contact', Array, Object(frontend\controllers\SiteController))
+#13 /var/www/html/test/frontend/controllers/SiteController.php(130): yii\base\Controller->render('contact', Array)
+#14 [internal function]: frontend\controllers\SiteController->actionContact()
+#15 /var/www/html/test/vendor/yiisoft/yii2/base/InlineAction.php(55): call_user_func_array(Array, Array)
+#16 /var/www/html/test/vendor/yiisoft/yii2/base/Controller.php(154): yii\base\InlineAction->runWithParams(Array)
+#17 /var/www/html/test/vendor/yiisoft/yii2/base/Module.php(454): yii\base\Controller->runAction('contact', Array)
+#18 /var/www/html/test/vendor/yiisoft/yii2/web/Application.php(84): yii\base\Module->runAction('site/contact', Array)
+#19 /var/www/html/test/vendor/yiisoft/yii2/base/Application.php(375): yii\web\Application->handleRequest(Object(yii\web\Request))
+#20 /var/www/html/test/frontend/web/index.php(18): yii\base\Application->run()
+#21 {main}
+2016-07-11 08:43:18 [192.168.1.52][-][5039d98so289ai09p5hj25i3g6][info][application] $_COOKIE = [
+    'PHPSESSID' => '5039d98so289ai09p5hj25i3g6'
+    '_csrf' => '45c248d0c9fde4f9fbbba8f58e0aff80583a545461429e846f0034ccb9b15bb5a:2:{i:0;s:5:\"_csrf\";i:1;s:32:\"eNWLXak_8CE05RJm8uGZr0gQ3P9S0Wfa\";}'
+]
+
+$_SESSION = [
+    '__flash' => []
+    '__returnUrl' => '/admin'
+]
+
+$_SERVER = [
+    'REDIRECT_UNIQUE_ID' => 'V4Mx9se9xWm0sBPwUQt1bAAAAAk'
+    'REDIRECT_STATUS' => '200'
+    'UNIQUE_ID' => 'V4Mx9se9xWm0sBPwUQt1bAAAAAk'
+    'HTTP_HOST' => '192.168.1.47:8081'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_REFERER' => 'http://192.168.1.47:8081/frontend/web/site/about'
+    'HTTP_COOKIE' => 'PHPSESSID=5039d98so289ai09p5hj25i3g6; _csrf=45c248d0c9fde4f9fbbba8f58e0aff80583a545461429e846f0034ccb9b15bb5a%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%22eNWLXak_8CE05RJm8uGZr0gQ3P9S0Wfa%22%3B%7D'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'PATH' => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.6 (CentOS) PHP/5.6.22'
+    'SERVER_NAME' => '192.168.1.47'
+    'SERVER_ADDR' => '192.168.1.47'
+    'SERVER_PORT' => '8081'
+    'REMOTE_ADDR' => '192.168.1.52'
+    'DOCUMENT_ROOT' => '/var/www/html/test'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/var/www/html/test'
+    'SERVER_ADMIN' => 'root@localhost'
+    'SCRIPT_FILENAME' => '/var/www/html/test/frontend/web/index.php'
+    'REMOTE_PORT' => '5606'
+    'REDIRECT_URL' => '/frontend/web/site/contact'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => ''
+    'REQUEST_URI' => '/frontend/web/site/contact'
+    'SCRIPT_NAME' => '/frontend/web/index.php'
+    'PHP_SELF' => '/frontend/web/index.php'
+    'REQUEST_TIME_FLOAT' => 1468215798.243
+    'REQUEST_TIME' => 1468215798
+]
+2016-07-11 08:43:29 [192.168.1.52][-][5039d98so289ai09p5hj25i3g6][error][yii\base\InvalidConfigException] exception 'yii\base\InvalidConfigException' with message 'Either GD PHP extension with FreeType support or ImageMagick PHP extension with PNG support is required.' in /var/www/html/test/vendor/yiisoft/yii2/captcha/Captcha.php:179
+Stack trace:
+#0 /var/www/html/test/vendor/yiisoft/yii2/captcha/Captcha.php(94): yii\captcha\Captcha::checkRequirements()
+#1 /var/www/html/test/vendor/yiisoft/yii2/base/Object.php(107): yii\captcha\Captcha->init()
+#2 [internal function]: yii\base\Object->__construct(Array)
+#3 /var/www/html/test/vendor/yiisoft/yii2/di/Container.php(374): ReflectionClass->newInstanceArgs(Array)
+#4 /var/www/html/test/vendor/yiisoft/yii2/di/Container.php(153): yii\di\Container->build('yii\\captcha\\Cap...', Array, Array)
+#5 /var/www/html/test/vendor/yiisoft/yii2/BaseYii.php(344): yii\di\Container->get('yii\\captcha\\Cap...', Array, Array)
+#6 /var/www/html/test/vendor/yiisoft/yii2/base/Widget.php(97): yii\BaseYii::createObject(Array)
+#7 /var/www/html/test/vendor/yiisoft/yii2/widgets/ActiveField.php(673): yii\base\Widget::widget(Array)
+#8 /var/www/html/test/frontend/views/site/contact.php(35): yii\widgets\ActiveField->widget('yii\\captcha\\Cap...', Array)
+#9 /var/www/html/test/vendor/yiisoft/yii2/base/View.php(325): require('/var/www/html/t...')
+#10 /var/www/html/test/vendor/yiisoft/yii2/base/View.php(247): yii\base\View->renderPhpFile('/var/www/html/t...', Array)
+#11 /var/www/html/test/vendor/yiisoft/yii2/base/View.php(149): yii\base\View->renderFile('/var/www/html/t...', Array, Object(frontend\controllers\SiteController))
+#12 /var/www/html/test/vendor/yiisoft/yii2/base/Controller.php(378): yii\base\View->render('contact', Array, Object(frontend\controllers\SiteController))
+#13 /var/www/html/test/frontend/controllers/SiteController.php(130): yii\base\Controller->render('contact', Array)
+#14 [internal function]: frontend\controllers\SiteController->actionContact()
+#15 /var/www/html/test/vendor/yiisoft/yii2/base/InlineAction.php(55): call_user_func_array(Array, Array)
+#16 /var/www/html/test/vendor/yiisoft/yii2/base/Controller.php(154): yii\base\InlineAction->runWithParams(Array)
+#17 /var/www/html/test/vendor/yiisoft/yii2/base/Module.php(454): yii\base\Controller->runAction('contact', Array)
+#18 /var/www/html/test/vendor/yiisoft/yii2/web/Application.php(84): yii\base\Module->runAction('site/contact', Array)
+#19 /var/www/html/test/vendor/yiisoft/yii2/base/Application.php(375): yii\web\Application->handleRequest(Object(yii\web\Request))
+#20 /var/www/html/test/frontend/web/index.php(18): yii\base\Application->run()
+#21 {main}
+2016-07-11 08:43:29 [192.168.1.52][-][5039d98so289ai09p5hj25i3g6][info][application] $_COOKIE = [
+    'PHPSESSID' => '5039d98so289ai09p5hj25i3g6'
+    '_csrf' => '3cdb150b8252a0588924c1a3676920a617ef8a692263db9109b41c415c4ec5cca:2:{i:0;s:5:\"_csrf\";i:1;s:32:\"bOlsgih3zaezMAh1GF0-kG0ny3o_0RBo\";}'
+]
+
+$_SESSION = [
+    '__flash' => []
+    '__returnUrl' => '/admin'
+]
+
+$_SERVER = [
+    'REDIRECT_UNIQUE_ID' => 'V4MyAa@Mow3G-gqXJ083cwAAAAw'
+    'REDIRECT_STATUS' => '200'
+    'UNIQUE_ID' => 'V4MyAa@Mow3G-gqXJ083cwAAAAw'
+    'HTTP_HOST' => '192.168.1.47:8081'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_REFERER' => 'http://192.168.1.47:8081/frontend/web/site/about'
+    'HTTP_COOKIE' => 'PHPSESSID=5039d98so289ai09p5hj25i3g6; _csrf=3cdb150b8252a0588924c1a3676920a617ef8a692263db9109b41c415c4ec5cca%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%22bOlsgih3zaezMAh1GF0-kG0ny3o_0RBo%22%3B%7D'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'PATH' => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.6 (CentOS) PHP/5.6.22'
+    'SERVER_NAME' => '192.168.1.47'
+    'SERVER_ADDR' => '192.168.1.47'
+    'SERVER_PORT' => '8081'
+    'REMOTE_ADDR' => '192.168.1.52'
+    'DOCUMENT_ROOT' => '/var/www/html/test'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/var/www/html/test'
+    'SERVER_ADMIN' => 'root@localhost'
+    'SCRIPT_FILENAME' => '/var/www/html/test/frontend/web/index.php'
+    'REMOTE_PORT' => '5615'
+    'REDIRECT_URL' => '/frontend/web/site/contact'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => ''
+    'REQUEST_URI' => '/frontend/web/site/contact'
+    'SCRIPT_NAME' => '/frontend/web/index.php'
+    'PHP_SELF' => '/frontend/web/index.php'
+    'REQUEST_TIME_FLOAT' => 1468215809.303
+    'REQUEST_TIME' => 1468215809
+]

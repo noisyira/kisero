@@ -1,0 +1,506 @@
+<style>
+    .history{text-decoration: none; color: #428bca; border-bottom: dashed 1px #428bca; cursor: pointer;}
+</style>
+
+<ol class="breadcrumb">
+    <li><a href="#/">Главная</a></li>
+    <li class="active">Заполнить обращение</li>
+</ol>
+
+<div ng-controller="completeCtrl as complete" class="row" ng-init="complete.init(); complete.clearERZ()">
+
+    <!-- Поиск застрахованных по ЕРЗ -->
+    <label class="task-erz" for="erz">Поиск по реестру застрахованных:</label>
+    <input type="checkbox" id="erz" name="erz" ng-model="complete.findERZ" style="display: none;" />
+
+    <div class="form-group check-element animate-show" ng-show="complete.findERZ">
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border">Поиск застрахованного</legend>
+            <form name="saveFind_ERZ">
+
+                <div class="form-group">
+                    <div class="col-sm-3">
+                        <label for="erz_f_name">Фамилия</label>
+                        <input class="form-control"
+                               id="erz_f_name"
+                               placeholder="Фамилия"
+                               ng-model="complete.erz.sName"
+                               size="30" type="text" />
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="erz_name">Имя</label>
+                        <input class="form-control"
+                               id="erz_name"
+                               placeholder="Имя"
+                               ng-model="complete.erz.Name"
+                               size="30" type="text" />
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="erz_l_name">Отчество</label>
+                        <input class="form-control"
+                               id="erz_l_name"
+                               placeholder="Отчество"
+                               ng-model="complete.erz.pName"
+                               size="30" type="text" />
+                    </div>
+                    <div class="col-sm-3">
+                        <!--<label for="erz_date">Дата рождения</label>-->
+                        <div class="form-group" ng-class="{'has-error': datepickerForm.date.$invalid}">
+                            <label class="control-label" for="erz_date">Дата рождения</label>
+                            <input type="text"
+                                   id="erz_date"
+                                   class="form-control"
+                                   ng-model="complete.erz.dateMan"
+                                   data-date-format="dd-MM-yyyy"
+                                   data-autoclose="1"
+                                   placeholder="ДД-ММ-ГГГГ"
+                                   name="date"
+                                   bs-datepicker>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-12 text-right">
+                        <!--<input class="btn btn-default" style="margin: 10px 0;"  type="button" ng-click="findERZ=!findERZ" value="Скрыть" >-->
+                        <!--<input class="btn btn-default" style="margin: 10px 0;"  type="button" ng-click="clearERZ()" value="Очистить" >-->
+                        <a class="btn btn-default" ng-click="complete.findERZ=!complete.findERZ"><i class="fa fa-minus-square-o"></i>&nbsp;Скрыть</a>
+                        <a class="btn btn-default" ng-click="complete.clearERZ()"><i class="fa fa-pencil-square-o"></i>&nbsp;Очистить</a>
+                        <a class="btn btn-default" ng-click="complete.submitForm()"><i class='fa fa-search'></i>&nbsp;Поиск</a>
+                    </div>
+                </div>
+            </form>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <hr style="margin-bottom: 0;">
+                    <span  ng-show="complete.loading" us-spinner="{right:0, top:10, radius:7, lines: 13, length: 4, width:2, }"></span>
+                    <p ng-show="!complete.erzData">
+                        Для поиска застрахованного лица введите его данные в форму поиска.<br>
+                        Все поля заполнять необязательно.
+                    </p>
+                    <!-- Список застрахованных -->
+                    <table ng-show="complete.erzData" class="table table-hover table-condensed table-bordered">
+                        <thead>
+                        <tr>
+                            <td>Фамилия</td>
+                            <td>Имя</td>
+                            <td>Отчество</td>
+                            <td>Дата рождения</td>
+                            <td>Страховая</td>
+                            <td>Прикрепление к МО</td>
+                            <td>Действие</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="row in complete.erzData">
+                            <td>{{row.sName}}</td>
+                            <td>{{row.Name}}</td>
+                            <td>{{row.pName}}</td>
+                            <td> {{complete.formatDate(row.dateMan) | date:'dd-MM-yyyy'}}</td>
+                            <td ng-switch="row.reestr.orgId">
+                                <span ng-switch-when="1">ООО "СК "ИНГОССТРАХ-М" </span>
+                                <span ng-switch-when="4">ООО ВТБ МС</span>
+                                <span ng-switch-default></span>
+                            </td>
+                            <td>
+                                <span style="font-size: 12px;">{{row.stik.mo.NAMMO}}</span>
+                                <br>
+                                <span style="font-size: 10px;">{{row.stik.mo.ADRESMO}}</span>
+                            </td>
+                            <td>
+                                <a class="exit" style="font-size: 14px; cursor: pointer;" ng-click="complete.setERZ(row)">Применить</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+
+    <fieldset class="scheduler-border">
+        <legend class="scheduler-border">Регистрационная карта</legend>
+
+        <span  ng-show="complete.load_page" us-spinner="{right:50, top:50, radius:7, lines: 13, length: 4, width:2 }" style="position: absolute; top:50%; left:50%;"></span>
+        <div class="row" ng-class="{load_page: completeload_page}"></div>
+
+        <div class="form-group col-md-12" style="padding: 0; margin: 10px 0;">
+            <div class="col-sm-4">
+                <label for="task_tip_statement">Тип обращения</label>
+                <select class="form-control"
+                        id="task_tip_statement"
+                        style="color: #777;"
+                        ng-change="complete.refreshStmt(complete.task.tip_statement); complete.clear();"
+                        ng-model="complete.task.tip_statement">
+                    <option value="" disabled selected style="color: gray; text-align: center;">Тип обращения</option>
+                    <option value="1">Жалоба</option>
+                    <option value="2">Консультация</option>
+                    <option value="3">Заявление</option>
+                    <option value="4">Предложение</option>
+                </select>
+            </div>
+
+            <!-- Тип обращения  -->
+            <div class="form-group">
+                <div class="col-sm-8" >
+                    <label for="task_theme_statement">Тема обращения:</label>
+
+                    <ui-select tagging tagging-label="('new')"
+                               id="task_theme_statement"
+                               ng-model="complete.task.theme"
+                               ng-disabled="!complete.task.tip_statement"
+                               theme="bootstrap"
+                               title="Тема обращения"
+                    >
+                        <ui-select-match placeholder="Тема обращения...">
+                            {{ $select.selected.theme_statement || $select.selected}}
+                        </ui-select-match>
+                        <ui-select-choices group-by="gp" repeat="item in complete.lists | filter: $select.search"
+                                           refresh="complete.refreshStmt(complete.task.tip_statement)"
+                                           refresh-delay="0">
+                            <div ng-bind-html="item.theme_statement | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+
+            <!-- Комментарий -->
+            <div class="col-md-12">
+                <div class="form-group" style="padding: 0; margin: 10px 0;">
+                    <label for="task_theme_statement_desc">Комментарий:</label>
+                    <textarea id="task_theme_statement_desc"
+                              class="form-control"
+                              style="width: 100%; max-width: 100%;"
+                              rows="2"
+                              placeholder="Комментарий..."
+                              ng-model="complete.task.theme_statement_description">
+                    </textarea>
+                </div>
+            </div>
+
+
+            <div class="col-md-12">
+                <div class="mod-header">
+                    <ul class="ops"></ul>
+                    <h2 class="detail-title">Информация об обратившемся</h2>
+                </div>
+            </div>
+
+            <div class="row">
+            <!--Личный данные для отсроченного ответа-->
+            <div class="col-md-6">
+                <!--Фамилия-->
+                <div class="row" style="margin:10px 0;">
+                    <div class="form-group">
+                        <div class="col-md-5" style="margin: 5px 0;">
+                            <label for="task_f_name" class="right inline">Фамилия</label>
+                        </div>
+
+                        <div class="col-md-7 columns">
+                            <input type="hidden" ng-model="task.defer.enp" />
+                            <input class="form-control"
+                                   id="task_f_name"
+                                   ng-model="complete.task.deffered.fam"
+                                   placeholder="Фамилия"
+                                   size="30"
+                                   type="text" />
+                        </div>
+                    </div>
+                </div>
+
+                <!--Имя-->
+                <div class="row" style="margin:10px 0;">
+                    <div class="form-group">
+                        <div class="col-md-5" style="margin: 5px 0;">
+                            <label for="task_name" class="right inline">Имя</label>
+                        </div>
+                        <div class="col-md-7 columns">
+                            <input class="form-control"
+                                   id="task_name"
+                                   ng-model="complete.task.deffered.im"
+                                   placeholder="Имя"
+                                   size="30"
+                                   type="text" />
+                        </div>
+                    </div>
+                </div>
+
+                <!--Отчество-->
+                <div class="row" style="margin:10px 0;">
+                    <div class="form-group">
+                        <div class="col-md-5" style="margin: 5px 0;">
+                            <label for="task_l_name" class="right inline">Отчество</label>
+                        </div>
+                        <div class="col-md-7 columns">
+                            <input class="form-control"
+                                   id="task_l_name"
+                                   ng-model="complete.task.deffered.ot"
+                                   placeholder="Отчество"
+                                   size="30"
+                                   type="text" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Дата рождения -->
+                <div class="row" style="margin:10px 0;">
+                    <div class="form-group">
+                        <div class="col-md-5" style="margin: 5px 0;">
+                            <label for="task_bith_date" class="right inline">Дата рождения</label>
+                        </div>
+
+                        <div class="col-md-7">
+                            <input type="text"
+                                   id="task_bith_date"
+                                   class="form-control"
+                                   ng-model="complete.task.deffered.dt"
+                                   data-date-format="dd-MM-yyyy"
+                                   data-date-type="number"
+                                   data-autoclose="1"
+                                   placeholder="ДД-ММ-ГГГГ"
+                                   name="date"
+                                   bs-datepicker>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="margin:10px 0;">
+                    <div class="form-group">
+                        <div class="col-md-5" style="margin: 5px 0;">
+                            <label for="defer_phone" class="right inline">Контактный телефон</label>
+                        </div>
+                        <div class="col-md-7 columns">
+                            <input class="form-control"
+                                   id="defer_phone"
+                                   placeholder="Контактный телефон"
+                                   ng-model="complete.task.deffered.phone"
+                                   size="30"
+                                   type="text"
+                                   numbers-only
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <!-- Добавить представителя -->
+                <div class="row" style="margin:10px 0;">
+                    <div class="form-group">
+                        <div class="col-md-5" style="margin: 5px 0;">
+                            <label for="task.defer.agent" class="right inline">Добавить представителя</label>
+                        </div>
+                        <div class="col-md-7 columns">
+                            <input
+                                    id="task.defer.agent"
+                                    ng-model="task.defer.agent"
+                                    type="checkbox"
+                            />&nbsp;&nbsp;
+                        </div>
+                    </div>
+                </div>
+
+                <!--Доп.: контактное лицо-->
+                <div class="row" style="margin:10px 0;" ng-show="task.defer.agent">
+                    <div class="form-group">
+                        <div class="col-md-5" style="margin: 5px 0;">
+                            <label for="add_fio" class="right inline">ФИО представителя</label>
+                        </div>
+                        <div class="col-md-7 columns">
+                            <input class="form-control"
+                                   id="add_fio"
+                                   placeholder="ФИО представителя"
+                                   ng-model="complete.task.deffered.add_fio"
+                                   size="30"
+                                   type="text"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <!--Доп.: телефон-->
+                <div class="row" style="margin:10px 0;" ng-show="task.defer.agent">
+                    <div class="form-group">
+                        <div class="col-md-5" style="margin: 5px 0;">
+                            <label for="add_phone" class="right inline">Телефон представителя</label>
+                        </div>
+                        <div class="col-md-7 columns">
+                            <input class="form-control"
+                                   id="add_phone"
+                                   placeholder="Телефон представителя"
+                                   ng-model="complete.task.deffered.add_phone"
+                                   size="30"
+                                   type="text"
+                                   numbers-only
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Отсроченный ответ -->
+                <div class="row" style="margin:10px 0;">
+                    <div class="form-group">
+                        <div class="col-md-5">
+                            <label for="task.defer.def" class="right inline">Отсроченный ответ</label>
+                        </div>
+
+                        <div class="col-md-7 columns">
+                            <input
+                                    id="task.defer.def"
+                                    ng-model="complete.task.deffered.def"
+                                    type="checkbox"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <!--Комментарий-->
+                <div class="row" style="margin:10px 0;" ng-show="complete.task.defer.def">
+                    <div class="form-group">
+                        <div class="col-md-5" style="margin: 5px 0;">
+                            <label for="defer_desc" class="right inline">Комментарий</label>
+                        </div>
+
+                        <div class="col-md-7 columns">
+                        <textarea class="form-control"
+                                  id="defer_desc"
+                                  style="width: 100%; max-width: 100%;"
+                                  ng-model="complete.task.deffered.desc"
+                                  placeholder="Причина отсроченного ответа"
+                                  rows="3"
+                        ></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="mod-header">
+                <ul class="ops"></ul>
+                <h2 class="detail-title">История обращений
+                    <span style="float: right;background: white;padding: 0 10px;">
+                        <label for="history">
+                            <span class="history" ng-if="!stmtHistory"> Показать <i class="fa fa-chevron-right" aria-hidden="true"></i> </span>
+                            <span class="history" ng-if="stmtHistory"> Скрыть <i class="fa fa-chevron-down" aria-hidden="true"></i> </span>
+                        </label>
+                        <input type="checkbox" id="history" ng-model="stmtHistory" hidden>
+                    </span>
+                </h2>
+            </div>
+        </div>
+
+        <div class="row" style="margin:10px 0;" ng-show="stmtHistory">
+            <div class="col-md-12">
+                Нет обращений
+            </div>
+        </div>
+
+        <!-- Принятые меры -->
+        <div class="col-sm-12" ng-show="task.status != 5">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mod-header">
+                        <ul class="ops"></ul>
+                        <h2 class="detail-title">Принятые меры</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Завершение обращения -->
+            <div class="col-md-5" style="padding: 0">
+                <div class="form-group" ng-class="{ 'has-error': saveNewTaskData.complete.task_result.$invalid }">
+                    <label for="task_result">Результат обращения:</label>
+                    <select id="task_result"
+                            class="form-control"
+                            name="task_result"
+                            ng-model="complete.task.data.accept"
+                            ng-options="state.id as state.name for state in complete.state_result"
+                            ng-required="true">
+                        <option value=''>-  Результат обращения  -</option>
+                    </select>
+
+                    <p ng-show="saveNewTaskData.complete.task_result.$invalid"
+                       class="help-block">
+                        Поле «Принятые меры» обязательно к заполнению
+                    </p>
+                </div>
+
+                <div class="form-group" ng-if="complete.task.data.accept == 12">
+                    <label for="expired_1">Дата завершения</label>
+                    <input type="text"
+                           id="expired_1"
+                           class="form-control"
+                           ng-model="complete.task.data.expired_1"
+                           data-min-date="{{complete.task.expired}}"
+                           data-start-date="{{complete.task.expired}}"
+                           data-date-format="dd-MM-yyyy"
+                           placeholder="ДД-ММ-ГГГГ"
+                           name="date"
+                           bs-datepicker>
+                </div>
+
+                <div class="form-group" ng-if="complete.task.data.accept == 8">
+                    <label for="user_o">Введите вн. номер специалиста</label>
+                    <ui-select tagging tagging-label="('new')"
+                               id="user_o"
+                               ng-model="complete.task.transfer"
+                               theme="bootstrap"
+                               title="Операторы" >
+                        <ui-select-match placeholder="Выберите оператора...">{{$select.selected.sip_dispaly_name}}</ui-select-match>
+                        <ui-select-choices group-by="gp" repeat="item in complete.listUsers | filter: $select.search"
+                                           refresh="complete.refreshUsers(task)"
+                                           refresh-delay="0">
+                            <div ng-bind-html="complete.userHtml(item) | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+
+
+            </div>
+
+            <!-- Комментарий к завершению -->
+            <div class="col-md-7">
+                <div class="col-sm-12" style="padding: 0">
+                    <div class="form-group">
+                        <label for="taken_measures">Описание:</label>
+                    <textarea id="taken_measures"
+                              class="form-control"
+                              style="width: 100%;"
+                              rows="4"
+                              placeholder="Краткое описание принятых мер..."
+                              ng-model="complete.task.data.accept_msg">
+                    </textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12 text-right" ng-if="complete.task.data.accept == 8">
+                    <!-- <button ng-click="save()" >Save</button> -->
+                    <input class="btn btn-default"
+                           style="margin: 10px 0;"
+                           type="submit"
+                           ng-click="complete.transfer(complete.task)"
+                           ng-disabled="saveNewTaskData.$invalid"
+                           value="Перевести обращение">
+                </div>
+
+                <div class="col-sm-12 text-right" ng-if="complete.task.data.accept != 8">
+                    <!-- <button ng-click="save()" >Save</button> -->
+                    <input class="btn btn-default"
+                           style="margin: 10px 0;"
+                           type="submit"
+                           ng-click="complete.update(complete.task)"
+                           ng-disabled="saveNewTaskData.$invalid"
+                           value="Сохранить">
+                </div>
+            </div>
+        </div>
+
+        </div>
+    </fieldset>
+
+</div>

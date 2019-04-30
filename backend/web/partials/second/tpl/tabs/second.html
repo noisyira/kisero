@@ -1,0 +1,40 @@
+<div class="tab-content">
+    <div class="row" style="margin: 10px 0;">
+        <div class="col-md-12" ng-show="!historyStmt">
+            <p>Не найдено обращений</p>
+        </div>
+
+        <div class="col-md-12" ng-show="historyStmt" style="padding: 0">
+            <!--<p>{{historyStmt}}!</p>-->
+            {{historyStmt.activePanel}}
+
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <td>Номер</td>
+                    <td style="width: 200px;">Тип обращения</td>
+                    <td style="width: 300px;">Содеражание</td>
+                    <td style="width: 300px;">ФИО</td>
+                    <td style="width: 300px;">Дата подачи</td>
+                    <td style="width: 100px;">Статус</td>
+                    <td>Действие</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="item in historyStmt">
+                    <td>{{item.id}}</td>
+                    <td>{{item.group.name}}</td>
+                    <td>{{item.theme.theme_statement}}</td>
+                    <td>{{item.deffered.fam}}&nbsp;{{item.deffered.im}}&nbsp;{{item.deffered.ot}}</td>
+                    <td>{{item.statement_date}}</td>
+                    <td>{{item.stmt_status.name}}</td>
+                    <td>
+                        <input type="checkbox" ng-model="task.relate.id[item.id]" value="item.id" >
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
